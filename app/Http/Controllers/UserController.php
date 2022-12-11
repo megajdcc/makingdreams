@@ -16,6 +16,7 @@ use App\Events\{UsuarioCreado};
 use App\Models\Entrega;
 use App\Models\EstadoCuenta;
 use App\Models\Telefono;
+use App\Models\DatoBancario;
 
 class UserController extends Controller
 {
@@ -24,6 +25,9 @@ class UserController extends Controller
         $usuario->rol;
         $usuario->rol->permisos;
         $usuario->avatar = $usuario->getAvatar();
+        $usuario->telefonos;
+        $usuario->datosBancarios;
+        $usuario->link;
 
         return response()->json($usuario);
 
@@ -81,6 +85,7 @@ class UserController extends Controller
             $usuario->estado;
             $usuario->pais;
             $usuario->cuenta?->movimientos;
+            $usuario->datosBancarios;
 
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
@@ -169,6 +174,8 @@ class UserController extends Controller
             $usuario->rol;
             $usuario->ciudad;
             $usuario->rol->permisos;
+            $usuario->datosBancarios;
+            $usuario->telefonos;
             $usuario->avatar = $usuario->getAvatar();
             $result = true;
         }catch(Exception $e){
@@ -215,7 +222,8 @@ class UserController extends Controller
             $usuario->ciudad;
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
-            $usuario->compania;
+            $usuario->datosBancarios;
+            $usuario->telefonos;
         }
         return response()->json($usuarios);
     }
@@ -284,7 +292,11 @@ class UserController extends Controller
         $usuario->rol;
         $usuario->habilidades = $usuario->getHabilidades();
         $usuario->avatar = $usuario->getAvatar();
-
+        $usuario->cuenta?->movimientos;
+        $usuario->telefonos;
+        $usuario->datosBancarios;
+        $usuario->link;
+        $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
         return response()->json(['result' => true, 'usuario' => $usuario]);
     }
 
@@ -582,7 +594,7 @@ class UserController extends Controller
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
-
+            $usuario->datosBancarios;
             $usuario->telefonos;
 
 
@@ -598,6 +610,44 @@ class UserController extends Controller
 
     }
 
+
+    public function agregarDatoBancario(Request $request, User $usuario)
+    {
+
+        $datos = $request->validate([
+            'numero' => 'required|unique:dato_bancarios,numero',
+            'entidad' => 'required',
+            'principal' => 'required'
+        ], [
+            'numero.unique' => 'El número de cuenta ya está siendo usado, intente con otro'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+
+            $usuario->agregarDatoBancario($datos);
+
+            $usuario->tokens;
+            $usuario->rol;
+            $usuario->habilidades = $usuario->getHabilidades();
+            $usuario->avatar = $usuario->getAvatar();
+            $usuario->link;
+            $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+            $usuario->datosBancarios;
+            $usuario->telefonos;
+
+
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'usuario' => $usuario]);
+    }
+
     public function quitarTelefono(User $usuario,Telefono $telefono){
 
         try{
@@ -611,6 +661,7 @@ class UserController extends Controller
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+            $usuario->datosBancarios;
 
             $usuario->telefonos;
             DB::commit();
@@ -618,11 +669,41 @@ class UserController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
+
+      
+
         }
 
         return response()->json(['result' => $result,'usuario' => $usuario]);
 
     }
+
+    public function quitarDatoBancario(User $usuario, DatoBancario $cuenta)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $cuenta->delete();
+
+            $usuario->tokens;
+            $usuario->rol;
+            $usuario->habilidades = $usuario->getHabilidades();
+            $usuario->avatar = $usuario->getAvatar();
+            $usuario->link;
+            $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+            $usuario->datosBancarios;
+            $usuario->telefonos;
+            DB::commit();
+            $result = true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'usuario' => $usuario]);
+    }
+
 
 
 

@@ -192,4 +192,16 @@ class User extends Authenticatable
     }
 
 
+    public function agregarDatoBancario(array $datos): DatoBancario
+    {
+        return DatoBancario::create([
+            ...$datos,
+            ...['usuario_id' => $this->id]
+        ]);
+    }
+
+
+ 
+
+
 }

@@ -123,7 +123,7 @@ class AuthController extends Controller
          $user->avatar = $user->getAvatar();
          $user->link;
          $user->codigo_referidor = $user->link ? $user->link->link :'';
-        
+         $user->datosBancarios;
          $user->telefonos;
          // broadcast(new UsuarioConectado($user))->toOthers();
 
@@ -159,6 +159,9 @@ class AuthController extends Controller
       $usuario->rol;
       $usuario->habilidades = $usuario->getHabilidades();
       $usuario->avatar = $usuario->getAvatar();
+      $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+      $usuario->datosBancarios;
+      $usuario->telefonos;
       
       return response()->json($usuario);
    }

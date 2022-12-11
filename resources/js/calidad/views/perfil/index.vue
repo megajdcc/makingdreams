@@ -46,6 +46,18 @@
 
     </b-tab>
 
+    <b-tab lazy>
+    
+      <template #title>
+        <feather-icon icon="ListIcon" />
+        <span class="font-weight-bold">Datos Bancarios</span>
+      </template>
+    
+      <datos-bancario />
+    
+    </b-tab>
+
+
     <!-- <b-tab lazy >
       
       <template #title>
@@ -113,7 +125,9 @@ export default {
     CuentaInformacionForm,
     Invitados:() => import('./invitados/index.vue'),
     // FirmaDigital:() => import('./FirmaDigital.vue')
-    UserTelefonos: () => import('./UserTelefonos.vue')
+    UserTelefonos: () => import('./UserTelefonos.vue'),
+    DatosBancario: () => import('./DatosBancario.vue')
+
   },
   data() {
     return {

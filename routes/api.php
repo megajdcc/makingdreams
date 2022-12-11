@@ -58,7 +58,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('cambiar/contrasena/usuario/{usuario}',[UserController::class, 'changePassword']);
     Route::put('usuario/{usuario}/crear/codigo-referidor',[UserController::class,'crearCodigo']);
     Route::put('usuario/{usuario}/agregar/telefono',[UserController::class,'agregarTelefono']);
+    Route::put('usuario/{usuario}/agregar/dato/bancario', [UserController::class, 'agregarDatoBancario']);
+
     Route::get('usuario/{usuario}/quitar/telefono/{telefono}', [UserController::class, 'quitarTelefono']);
+    Route::get('usuario/{usuario}/quitar/dato-bancario/{cuenta}', [UserController::class, 'quitarDatoBancario']);
+
 
 
     /*****************************/

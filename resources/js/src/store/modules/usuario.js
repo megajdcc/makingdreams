@@ -486,7 +486,43 @@ export default {
 
 			})
 			
-		}
+		},
+
+
+		agregarDatoBancario({state,commit},datos){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuario/${state.usuario.id}/agregar/dato/bancario`, datos).then(({ data }) => {
+
+					if (data.result) {
+						commit('updatePerfil', data.usuario)
+					}
+
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		quitarDatoBancario({ state, commit }, { id }) {
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuario/${state.usuario.id}/quitar/dato-bancario/${id}`).then(({ data }) => {
+
+					if (data.result) {
+
+						commit('updatePerfil', data.usuario)
+					}
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+
+		},
+
+
+
 
 
 

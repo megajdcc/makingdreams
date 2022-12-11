@@ -491,4 +491,73 @@ class UserController extends Controller
         return response()->json(['result' => $result,'usuario' => $usuario]);
         
     }
+
+     public function misReferidos(Request $request){
+
+        $datos = $request->all();
+
+        $paginator = User::whereHas('referidos',function(Builder $q) use($request) {
+            $q->where('referidor_id',$request->user()->id);
+        })
+        ->orderBy($datos['sortBy'],'desc')
+        ->paginate($datos['perPage'] ?: 10000);
+
+        $usuarios = $paginator->items();
+
+        foreach ($usuarios as $key => $usuario){
+
+            $usuario->telefonos;
+
+            if(empty($usuario->imagen)){
+                $usuario->imagen =  asset('storage/img-perfil/default.jpg');
+            }else{
+                $usuario->imagen =  asset('storage/img-perfil/').$usuario->imagen;
+            }
+
+        }
+
+        return response()->json([
+            'usuarios' => $usuarios,
+            'total' => $paginator->total(),
+        ]);
+
+        
+
+    }
+
+    public function crearCodigo(Request $request,User $usuario){
+
+        $datos = $request->validate([
+            'codigo_referidor' => 'required|unique:links,link'
+        ],[
+            'codigo_referidor.unique' => 'El Código ya está siendo usado, inténta con otro'
+        ]);
+
+        try{
+            DB::beginTransaction();
+                $usuario->crearCodigo($datos);
+
+                $usuario->tokens;
+                $usuario->rol;
+                $usuario->habilidades = $usuario->getHabilidades();
+                $usuario->avatar = $usuario->getAvatar();
+                $usuario->link;
+                $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+
+                $usuario->telefonos;
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+
+        return response()->json(['result' => $result, 'usuario' => $usuario]);
+
+
+    }
+
+
+
 }

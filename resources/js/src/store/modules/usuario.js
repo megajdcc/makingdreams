@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
 
 	namespaced:true,
@@ -22,8 +24,9 @@ export default {
 				pais_id:null,
 				ciudad:null,
 				estado:null,
-				pais:null
-				
+				pais:null,
+				link:null,
+				codigo_referidor:null
 
 
 			},
@@ -46,7 +49,11 @@ export default {
 				pais_id: null,
 				ciudad: null,
 				estado: null,
-				pais: null
+				pais: null,
+				link: null,
+				codigo_referidor: null
+
+
 
 			},
 
@@ -84,7 +91,7 @@ export default {
 				nombre: null,
 				apellido: null,
 				username: null,
-				genero: 1, // 1 =>mas 2 => fem
+				genero: 1, // 1 => mas 2 => fem
 				fecha_nacimiento: '',
 				imagen: '',
 				email: '',
@@ -97,7 +104,10 @@ export default {
 				pais_id: null,
 				ciudad: null,
 				estado: null,
-				pais: null
+				pais: null,
+				link: null,
+				codigo_referidor: null
+
 			}
 		},
 
@@ -142,7 +152,9 @@ export default {
 		updatePerfil(state,data){
 
 			state.usuario = data
+		
 			localStorage.setItem('userData', JSON.stringify(data));
+		
 		},
 
 		limpiarUsuario(state){
@@ -180,6 +192,7 @@ export default {
 		},
 
 		conPermiso:(state) => {
+
 			return (permiso) => {
 
 				if(state.usuario){
@@ -189,14 +202,13 @@ export default {
 				return false;
 				
 			}
+		
 		},
 
-
 		getUsuarios: (state) => {
+
 			return (rol) => {
 				return state.usuarios.filter(user => {
-					
-
 					let i  = user.roles.findIndex((val,i ) => roles.name == rol)
 					if(i > 0 ){
 						return true;
@@ -206,8 +218,8 @@ export default {
 
 				});
 			} 
-		},
 
+		},
 
 		getUsuario:(state) => {
 			return (id) => {
@@ -215,11 +227,8 @@ export default {
 			}
 		},
 
-
 		getListado:(state) => {
 			return (users_id) => {
-
-			
 
 				var users = [];
 
@@ -260,8 +269,6 @@ export default {
 		getFullName : (state) => `${state.usuario.nombre} ${state.usuario.apellido}`, 
 
 		avatar:(state) => state.usuario.avatar,
-		
-	
 
 		getFilterUsers:(state) => {
 			return (roles_name) => {
@@ -275,9 +282,12 @@ export default {
 					return {label:val.nombre,value:val.id,id:val.id,email:val.email};
 				})
 			}
+		},
+
+		draftUsuario(state) {
+			return clone(state.usuario)
 		}
 
-	
 
 	},
 
@@ -417,7 +427,36 @@ export default {
 			})
 		},
 
+		async misReferidos({ commit }, data) {
+
+			return new Promise((resolve, reject) => {
+				axios.post('/api/usuario/perfil/referidos', data).then(({ data: datos }) => {
+					resolve(datos)
+				}).catch(e => reject(e))
+			})
+
+		},
+
+		crearLinkReferido({state,commit},{codigo_referidor}){
+			
+			return new Promise((resolve, reject) => {
+				
+				axios.put(`/api/usuario/${state.usuario.id}/crear/codigo-referidor`,{codigo_referidor:codigo_referidor}).then(({data}) => {
+
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+
+			})
+		}
+
 
 
 	}
+
 } 

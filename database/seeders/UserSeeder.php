@@ -71,8 +71,7 @@ class UserSeeder extends Seeder
 
             $usuario->token = $textToken;
 
-
-            $usuario->createLink();
+            // $usuario->createLink();
 
             $usuario->save();
     }

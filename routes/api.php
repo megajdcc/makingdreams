@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('upload/avatar', [UserController::class, 'uploadAvatar'])->name('upload_avatar');
     Route::put('perfil/update/usuario/{usuario}',[UserController::class, 'updatePerfil']);
     Route::post('cambiar/contrasena/usuario/{usuario}',[UserController::class, 'changePassword']);
-
+    Route::put('usuario/{usuario}/crear/codigo-referidor',[UserController::class,'crearCodigo']);
 
     /*****************************/
     /* NOTIFICACIONES
@@ -110,6 +110,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('fetch/usuarios',[UserController::class,'getUsers']);
     Route::post('usuario/{usuario}/update/avatar',[UserController::class,'actualizarAvatarUsuario']);
+
+    Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
+
+    
 
 
 

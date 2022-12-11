@@ -16,6 +16,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\Channel;
 use App\Models\Usuario\{Rol,Permiso};
 use App\Notifications\WelcomeUsuario;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -171,6 +172,14 @@ class User extends Authenticatable
     public function aperturarCuenta() : EstadoCuenta{
         return EstadoCuenta::aperturar($this);
     }
+
+    public function crearCodigo(array $datos): Link{
+        return Link::create([
+            'link' => Str::slug($datos['codigo_referidor']),
+            'activo' => false,
+            'usuario_id' => $this->id
+        ]);
+    } 
 
 
 }

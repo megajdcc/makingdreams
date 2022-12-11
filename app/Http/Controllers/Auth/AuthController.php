@@ -119,8 +119,12 @@ class AuthController extends Controller
          $user->rol;
          $user->habilidades = $user->getHabilidades();
          $user->avatar = $user->getAvatar();
+         $user->link;
+         $user->codigo_referidor = $user->link ? $user->link->link :'';
+        
 
-
+        
+         $user->telefonos;
          // broadcast(new UsuarioConectado($user))->toOthers();
 
          $result = true;

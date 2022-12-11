@@ -25,10 +25,14 @@
     <!--/ general tab -->
 
     <b-tab>
+
         <template #title>
           <feather-icon icon="Share2Icon" />
           <span class="font-weight-bold">Invitar</span>
         </template>
+
+        <Invitados />
+
     </b-tab>
 
     <!-- <b-tab lazy >
@@ -96,6 +100,7 @@ export default {
     ConfiguracionGeneral,
     CambiarPassword,
     CuentaInformacionForm,
+    Invitados:() => import('./invitados/index.vue')
     // FirmaDigital:() => import('./FirmaDigital.vue')
   },
   data() {

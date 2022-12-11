@@ -453,7 +453,43 @@ export default {
 
 
 			})
+		},
+
+
+		agregarTelefono({state,commit},datos){
+
+			return new Promise((resolve, reject) => {
+				axios.put(`/api/usuario/${state.usuario.id}/agregar/telefono`,datos).then(({data}) => {
+
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data)
+				}).catch(e => reject(e))
+
+			})
+		},
+
+		quitarTelefono({state,commit},{id}){
+
+			return new Promise((resolve, reject) => {
+				axios.get(`/api/usuario/${state.usuario.id}/quitar/telefono/${id}`).then(({data}) => {
+
+					if(data.result){
+
+						commit('updatePerfil',data.usuario)
+					}
+					resolve(data)
+
+				}).catch(e => reject(e))
+
+			})
+			
 		}
+
+
+
 
 
 

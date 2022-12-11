@@ -106,7 +106,8 @@ require('@/assets/scss/style.scss')
 Vue.config.productionTip = false
 
 
-
+import VueMask from 'v-mask'
+Vue.use(VueMask);
 
 window.clone = function (obj) {
   return JSON.parse(JSON.stringify(obj));

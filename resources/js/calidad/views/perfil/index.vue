@@ -35,6 +35,17 @@
 
     </b-tab>
 
+    <b-tab lazy>
+
+        <template #title>
+          <feather-icon icon="PhoneIcon" />
+          <span class="font-weight-bold">Teléfonos</span>
+        </template>
+        
+        <user-telefonos />
+
+    </b-tab>
+
     <!-- <b-tab lazy >
       
       <template #title>
@@ -100,8 +111,9 @@ export default {
     ConfiguracionGeneral,
     CambiarPassword,
     CuentaInformacionForm,
-    Invitados:() => import('./invitados/index.vue')
+    Invitados:() => import('./invitados/index.vue'),
     // FirmaDigital:() => import('./FirmaDigital.vue')
+    UserTelefonos: () => import('./UserTelefonos.vue')
   },
   data() {
     return {

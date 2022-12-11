@@ -182,4 +182,14 @@ class User extends Authenticatable
     } 
 
 
+    public function agregarTelefono(array $datos) : Telefono{
+
+        return Telefono::create([
+            ...$datos,
+            ...['usuario_id' => $this->id]
+        ]);
+
+    }
+
+
 }

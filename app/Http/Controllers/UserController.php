@@ -15,6 +15,7 @@ use Datatables;
 use App\Events\{UsuarioCreado};
 use App\Models\Entrega;
 use App\Models\EstadoCuenta;
+use App\Models\Telefono;
 
 class UserController extends Controller
 {
@@ -557,6 +558,73 @@ class UserController extends Controller
 
 
     }
+
+
+    public function agregarTelefono(Request $request,User $usuario){
+
+        $datos = $request->validate([
+            'numero' => 'required|unique:telefonos,numero',
+            'whatsapp' => 'required',
+            'principal' => 'required'
+        ],[
+            'numero.unique' => 'El número de teléfono ya está siendo, intente con otro'
+        ]);
+
+        try{
+            DB::beginTransaction();
+
+
+            $usuario->agregarTelefono($datos);
+
+            $usuario->tokens;
+            $usuario->rol;
+            $usuario->habilidades = $usuario->getHabilidades();
+            $usuario->avatar = $usuario->getAvatar();
+            $usuario->link;
+            $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+
+            $usuario->telefonos;
+
+
+            DB::commit();   
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'usuario' => $usuario]);
+
+
+    }
+
+    public function quitarTelefono(User $usuario,Telefono $telefono){
+
+        try{
+            DB::beginTransaction();
+            
+            $telefono->delete();
+
+            $usuario->tokens;
+            $usuario->rol;
+            $usuario->habilidades = $usuario->getHabilidades();
+            $usuario->avatar = $usuario->getAvatar();
+            $usuario->link;
+            $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
+
+            $usuario->telefonos;
+            DB::commit();
+            $result = true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'usuario' => $usuario]);
+
+    }
+
+
 
 
 

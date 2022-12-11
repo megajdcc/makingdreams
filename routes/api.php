@@ -57,6 +57,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('perfil/update/usuario/{usuario}',[UserController::class, 'updatePerfil']);
     Route::post('cambiar/contrasena/usuario/{usuario}',[UserController::class, 'changePassword']);
     Route::put('usuario/{usuario}/crear/codigo-referidor',[UserController::class,'crearCodigo']);
+    Route::put('usuario/{usuario}/agregar/telefono',[UserController::class,'agregarTelefono']);
+    Route::get('usuario/{usuario}/quitar/telefono/{telefono}', [UserController::class, 'quitarTelefono']);
+
 
     /*****************************/
     /* NOTIFICACIONES

@@ -103,8 +103,10 @@ class AuthController extends Controller
 
          $credentials = request(['email', 'password']);
 
-         if (!Auth::attempt($credentials,$data['remember'])){
+         if (!Auth::attempt([...$credentials,...['activo' => true]],$data['remember'])){
+
             return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
+         
          }
 
          $user = $request->user();
@@ -121,8 +123,6 @@ class AuthController extends Controller
          $user->avatar = $user->getAvatar();
          $user->link;
          $user->codigo_referidor = $user->link ? $user->link->link :'';
-        
-
         
          $user->telefonos;
          // broadcast(new UsuarioConectado($user))->toOthers();

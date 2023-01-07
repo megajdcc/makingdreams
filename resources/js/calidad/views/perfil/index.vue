@@ -42,7 +42,7 @@
           <span class="font-weight-bold">Teléfonos</span>
         </template>
         
-        <user-telefonos />
+        <user-telefonos :usuario="usuario"/>
 
     </b-tab>
 
@@ -53,7 +53,7 @@
         <span class="font-weight-bold">Datos Bancarios</span>
       </template>
     
-      <datos-bancario />
+      <datos-bancario :usuario="usuario" />
     
     </b-tab>
 

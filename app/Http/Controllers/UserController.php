@@ -28,12 +28,7 @@ class UserController extends Controller
     }
 
     public function getUsuario(User $usuario){
-        $usuario->rol;
-        $usuario->rol->permisos;
-        $usuario->avatar = $usuario->getAvatar();
-        $usuario->telefonos;
-        $usuario->datosBancarios;
-        $usuario->link;
+        $usuario->cargar();
 
         return response()->json($usuario);
 

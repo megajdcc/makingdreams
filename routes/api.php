@@ -123,10 +123,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
 
-    
-
-
-
     /**************************/
     /* Home
     /**************************/

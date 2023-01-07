@@ -181,12 +181,20 @@ export default {
 
    },
 
+   props:{
+      usuario:{
+         type:Object
+      },
+      isUser:Boolean
+   },
 
  
    setup(props){
 
       const formValidate = ref(null)
-      const {usuario} = toRefs(store.state.usuario)
+      const {usuario,isUser} = toRefs(props)
+
+    
 
       const formulario = ref({
          numero:'',
@@ -196,7 +204,7 @@ export default {
 
       const guardar = () => {
 
-         store.dispatch('usuario/agregarTelefono',formulario.value).then(({result}) => {
+         store.dispatch('usuario/agregarTelefono', { datos: formulario.value,usuario:usuario.value,isUser:isUser.value}).then(({result}) => {
             if(result){
                toast.success('Se ha agregado con éxito el número de teléfono',{position:'bottom-right'})
                
@@ -222,7 +230,8 @@ export default {
 
 
       const quitarTelefono = (telefono) => {
-         store.dispatch('usuario/quitarTelefono',telefono).then(({result}) => {
+         
+         store.dispatch('usuario/quitarTelefono',{telefono,isUser:isUser.value}).then(({result}) => {
             
             if(result){
                toast.info('Se ha eliminado con éxito el número de teléfono',{position:'bottom-right'})

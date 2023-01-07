@@ -181,12 +181,24 @@ export default {
 
    },
 
+   props:{
+      usuario:{
+         type:Object,
+         required:false
+      },
+      isUser:{
+         type:Boolean,
+         default:false,
+      }
+   },
 
  
    setup(props){
 
       const formValidate = ref(null)
-      const {usuario} = toRefs(store.state.usuario)
+      const {usuario:user,isUser} = toRefs(props)
+
+      const usuario = computed(() => user.value ? user.value : store.state.usuario.usuario)
 
       const formulario = ref({
          entidad:'',
@@ -196,7 +208,7 @@ export default {
 
       const guardar = () => {
 
-         store.dispatch('usuario/agregarDatoBancario',formulario.value).then(({result}) => {
+         store.dispatch('usuario/agregarDatoBancario', { datos: formulario.value ,usuario:usuario.value,isUser:isUser.value}).then(({result}) => {
             if(result){
                toast.success('Se ha agregado con éxito el dato bancario',{position:'bottom-right'})
                
@@ -222,7 +234,7 @@ export default {
 
 
       const quitarCuenta = (cuenta) => {
-         store.dispatch('usuario/quitarDatoBancario',cuenta).then(({result}) => {
+         store.dispatch('usuario/quitarDatoBancario',{cuenta:cuenta,isUser:isUser.value}).then(({result}) => {
             
             if(result){
                toast.info('Se ha eliminado con éxito el dato Bancario',{position:'bottom-right'})
@@ -240,7 +252,7 @@ export default {
          guardar,
          required,
          formulario,
-         usuario,
+
          quitarCuenta,
          loading:computed(() => store.state.loading)
       }

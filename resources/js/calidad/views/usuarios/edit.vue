@@ -20,9 +20,7 @@ export default {
          
          if(!usuarios.value.length){
 
-            store.dispatch('usuario/getUsuario',id.value).then((data) => {
-               store.commit('usuario/capturarUsuario',Number(id.value))
-            })
+            store.dispatch('usuario/getUsuario',id.value)
 
          }else{
 

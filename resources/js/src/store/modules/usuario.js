@@ -26,8 +26,8 @@ export default {
 				estado:null,
 				pais:null,
 				link:null,
-				codigo_referidor:null
-
+				codigo_referidor:null,
+				datos_bancarios: []
 
 			},
 
@@ -51,9 +51,8 @@ export default {
 				estado: null,
 				pais: null,
 				link: null,
-				codigo_referidor: null
-
-
+				codigo_referidor: null,
+				datos_bancarios:[]
 
 			},
 
@@ -133,6 +132,10 @@ export default {
 				state.usuarios[i] = data;
 				// state.usuario = data;
 			}
+
+			if(state.user.id === data.id){
+				state.user = data
+			}
 		},
 
 		updateAvatar(state,avatar){
@@ -180,6 +183,11 @@ export default {
 				pais: null
 			}
 			
+		},
+
+
+		setUsuario(state,usuario){
+			state.user = usuario
 		}
 
 
@@ -402,14 +410,12 @@ export default {
 
 		getUsuario({state,commit},id_usuario){
 			return new Promise((resolve, reject) => {
-					
-
 				axios.get(`/api/usuarios/${id_usuario}/get`).then(({data}) => {
+
+					commit('setUsuario',data)
 					resolve(data)
 				}).catch(e => reject(e))
-				.then(() => {
 
-				})
 
 				
 			})
@@ -459,13 +465,18 @@ export default {
 		},
 
 
-		agregarTelefono({state,commit},datos){
+		agregarTelefono({state,commit},{datos,usuario,isUser}){
 
 			return new Promise((resolve, reject) => {
-				axios.put(`/api/usuario/${state.usuario.id}/agregar/telefono`,datos).then(({data}) => {
+				axios.put(`/api/usuario/${usuario.id}/agregar/telefono`,datos).then(({data}) => {
 
 					if(data.result){
-						commit('updatePerfil',data.usuario)
+						if(isUser){
+							commit('update',data.usuario)
+						}else{
+							commit('updatePerfil', data.usuario)
+						}
+						
 					}
 
 					resolve(data)
@@ -474,14 +485,18 @@ export default {
 			})
 		},
 
-		quitarTelefono({state,commit},{id}){
+		quitarTelefono({state,commit},{telefono,isUser}){
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/usuario/${state.usuario.id}/quitar/telefono/${id}`).then(({data}) => {
+				axios.get(`/api/usuario/${isUser ? state.user.id : state.usuario.id}/quitar/telefono/${telefono.id}`).then(({data}) => {
 
 					if(data.result){
-
-						commit('updatePerfil',data.usuario)
+						if(isUser){
+							commit('update',data.usuario)
+						}else{
+							commit('updatePerfil', data.usuario)
+						}
+	
 					}
 					resolve(data)
 
@@ -492,13 +507,19 @@ export default {
 		},
 
 
-		agregarDatoBancario({state,commit},datos){
+		agregarDatoBancario({state,commit},{datos,usuario,isUser}){
 
 			return new Promise((resolve, reject) => {
-				axios.put(`/api/usuario/${state.usuario.id}/agregar/dato/bancario`, datos).then(({ data }) => {
+				axios.put(`/api/usuario/${usuario.id}/agregar/dato/bancario`, datos).then(({ data }) => {
 
 					if (data.result) {
-						commit('updatePerfil', data.usuario)
+
+						if(isUser){
+							commit('update',data.usuario)
+						}else{
+							commit('updatePerfil', data.usuario)
+						}
+					
 					}
 
 					resolve(data)
@@ -507,15 +528,21 @@ export default {
 			})
 		},
 
-		quitarDatoBancario({ state, commit }, { id }) {
+		quitarDatoBancario({ state, commit }, {cuenta,isUser}) {
 
 			return new Promise((resolve, reject) => {
-				axios.get(`/api/usuario/${state.usuario.id}/quitar/dato-bancario/${id}`).then(({ data }) => {
+				axios.get(`/api/usuario/${isUser ? state.user.id : state.usuario.id}/quitar/dato-bancario/${cuenta.id}`).then(({ data }) => {
 
-					if (data.result) {
+					if (data.result){
 
-						commit('updatePerfil', data.usuario)
+						if(isUser){
+							commit('update',data.usuario)
+						}else{
+							commit('updatePerfil', data.usuario)
+						}
+						
 					}
+
 					resolve(data)
 
 				}).catch(e => reject(e))

@@ -25,7 +25,7 @@ return new class extends Migration
             
             $t->foreignId('ciudad_id')->nullable()->constrained('ciudads')->cascadeOnUpdate()->onDelete('set null');
 
-            $t->foreignId('pais_id')->constrained('pais')->cascadeOnDelete()->cascadeOnUpdate();
+            $t->foreignId('pais_id')->nullable()->constrained('pais')->onDelete('set null')->cascadeOnUpdate();
             
             $t->foreignId('estado_id')->nullable()->constrained('estados')->cascadeOnDelete()->cascadeOnUpdate();
 

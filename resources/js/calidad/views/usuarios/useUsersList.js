@@ -51,8 +51,7 @@ export default function useUsersList() {
    watch([currentPage, perPage, searchQuery, roleFilter], () => {
       refetchData()
    })
-   
- 
+
 
 
    const fetchUsers = (ctx, callback) => {
@@ -65,10 +64,9 @@ export default function useUsersList() {
             sortDesc: isSortDirDesc.value,
             role: roleFilter.value,
          })
-         .then(response => {
-            const { users, total } = response.data
-            callback(users)
+         .then(({ users, total}) => {
             totalUsers.value = total
+            callback(users)
 
          })
          .catch(() => {

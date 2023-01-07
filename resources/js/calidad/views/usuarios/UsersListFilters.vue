@@ -24,7 +24,7 @@
           />
         </b-col>
 
-        </b-col>
+     
       </b-row>
     </b-card-body>
   </b-card>

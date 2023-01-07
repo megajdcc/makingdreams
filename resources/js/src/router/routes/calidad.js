@@ -600,7 +600,36 @@ export default [
       }
    },
 
-  
+   /*****************************************/
+   /*Politicas y Terminos y Condiciones
+   /*************************************** */
+   {
+      path: '/terminos-condiciones',
+      name: 'public.terminos',
+      component: () => import('views/paginas/terminos.vue'),
+      meta: {
+         layout: 'full',
+         resource: 'Auth',
+         action: 'read',
+      }
+   },
+
+
+   /*****************************************/
+   /* PAGINA DE REGISTRO POR LINK
+   /*************************************** */
+
+   {
+      path: '/link/:link',
+      props:true,
+      name: 'user.register',
+      component: () => import('@/views/pages/authentication/Register.vue'),
+      meta: {
+         layout: 'full',
+         resource: 'Auth',
+         action: 'read',
+      }
+   },
 
 
 

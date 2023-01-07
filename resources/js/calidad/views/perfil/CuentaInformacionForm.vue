@@ -33,41 +33,8 @@
         </b-col>
         <!--/ bio -->
 
-        <!-- birth date -->
-        <b-col md="6">
-          <b-form-group
-            label-for="example-datepicker"
-            label="Fecha de Nacimiento"
-          >
-            <flat-pickr
-              v-model="formulario.fecha_nacimiento"
-              class="form-control"
-              name="date"
-              placeholder="Fecha de nacimiento"
-            />
-          </b-form-group>
-        </b-col>
+     
         <!--/ birth date -->
-
-        <!--/ Country -->
-        <!-- phone -->
-        <b-col md="6">
-          <b-form-group
-            label-for="phone"
-            label="Teléfono"
-          >
-            <cleave
-              id="phone"
-              v-model="formulario.telefono"
-              class="form-control"
-              :raw="false"
-              :options="clevePhone"
-              placeholder="Número de telefono"
-            />
-          </b-form-group>
-        </b-col>
-        <!-- phone -->
-
         <b-col cols="12">
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"

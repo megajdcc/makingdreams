@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use App\Events\UsuarioConectado;
 use App\Events\UsuarioDesconectado;
 use App\Notifications\WelcomeUsuario;
+use App\Models\Link;
 
 class AuthController extends Controller
 {
@@ -36,37 +37,57 @@ class AuthController extends Controller
     {
         
       $data = $request->validate([
+            'username'        => 'required|unique:users,email',
             'nombre'          => 'required|string',
             'apellido'        => 'required|string',
-            'telefono'        => 'required',
+            'telefono'        => 'required|unique:telefonos,numero',
+            'pais_id'         => 'required',
             'email'           => 'required|unique:users,email',
-            'password'        => 'required|string',
-            'retype_password' => 'required|same:password',
-            'compania_id'     => 'required',
-            'puesto'          => 'required'
+            'link' => 'required',
+            // 'password'        => 'required|string',
+            // 'retype_password' => 'required|same:password',
         ],[
+            'username.unique'            => 'El nombre de usuario ya está registrado, inténte con otro',
             'email.unique'            => 'El correo electronico ya está registrado, inténte con otro',
-            'compania_id.required' => 'La compañía es importante no lo olvides',
-            'puesto.required'      => 'El puesto que ocupa es importante no lo olvides',
-            'retype_password.same' => 'Las contraseñas no son iguales'
+            // 'retype_password.same' => 'Las contraseñas no son iguales',
+            'telefono.unique' => 'El teléfono ya está registrado intente con otro'
         ]);
 
         try{
          DB::beginTransaction();
 
-            $usuario = User::create([...$data, ...[
-               'password' => \bcrypt($data['password']),
-               'rol_id' => Rol::where('nombre', 'Cliente')->first()->id
+            $datos = array_filter($data,fn($key) => $key != 'telefono',\ARRAY_FILTER_USE_KEY);
+
+            $usuario = User::create([...$datos, ...[
+               'password' =>\bcrypt('20464273jd'),
+               'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
             ]]);
+            
+            $link = Link::where('link',$data['link'])->first();
+
+
+            $usuario->referidor()->attach($link->usuario_id,['link_referencia' => $link->id]);
 
             $tokenResult = $usuario->createToken($usuario->nombre . '-' . $usuario->id);
+
             $token = $tokenResult->plainTextToken;
             $usuario->token = $token;
+            $usuario->aperturarCuenta();
             $usuario->save();
+            
+
+
+            if($data['telefono']){
+               $usuario->agregarTelefono([
+                  'numero' => $data['telefono'],
+                  'principal' => true,
+                  'whatsapp' => true
+               ]);
+
+            }
+
 
             $usuario->asignarPermisosPorRol();
-
-            $usuario->compania()->attach($data['compania_id'], ['puesto' => $data['puesto']]);
 
          $usuario->notify(new WelcomeUsuario($usuario));
 
@@ -75,6 +96,7 @@ class AuthController extends Controller
         }catch(\Exception $e){
          DB::rollback();
          $result = false;
+
         }
 
         return response()->json(['result' => $result]);
@@ -101,12 +123,10 @@ class AuthController extends Controller
 
       try{
 
-         $credentials = request(['email', 'password']);
-
+         $credentials = $request->all(['email', 'password']);
+      
          if (!Auth::attempt([...$credentials,...['activo' => true]],$data['remember'])){
-
-            return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
-         
+               return response()->json(['result' => false,'message' => 'El usuario o contraseña, son incorrectos'],401);
          }
 
          $user = $request->user();

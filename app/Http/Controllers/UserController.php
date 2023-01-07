@@ -17,9 +17,15 @@ use App\Models\Entrega;
 use App\Models\EstadoCuenta;
 use App\Models\Telefono;
 use App\Models\DatoBancario;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware("convertir_null")->only(['store']);
+    }
 
     public function getUsuario(User $usuario){
         $usuario->rol;
@@ -32,6 +38,9 @@ class UserController extends Controller
         return response()->json($usuario);
 
     }
+    
+
+    
 
 
     private function validar(Request $request,User $usuario = null){
@@ -39,8 +48,8 @@ class UserController extends Controller
             'nombre'           => 'required',
             'apellido'         => 'nullable',
             'genero'         => 'nullable',
-            'username' => ['required' , Rule::unique('users','username')->ignore($usuario)],
-            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario): 'unique: users,email'],
+            'username' => ['nullable'],
+            'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario): 'unique:users,email'],
             'fecha_nacimiento' => 'nullable',
             'rol_id'           => 'required',
             'activo'           => 'nullable',
@@ -68,8 +77,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
+    
         $datos = $this->validar($request);
 
+ 
         try{
             DB::beginTransaction();
             $usuario = $this->crearUsuario($datos);
@@ -114,16 +125,17 @@ class UserController extends Controller
         $usuario = User::create([
             'nombre'   => $datos['nombre'],
             'apellido' => $datos['apellido'],
-            'username' => $datos['username'],
+            'username' => Str::slug($datos['nombre'].'-'.$datos['apellido']),
             'email'    => $datos['email'],
             'genero'   => $datos['genero'],
-            'activo'   => true,
+            'activo'   => false,
             'password'  => Hash::make('20464273jd'),
             'fecha_nacimiento' => (isset($datos['fecha_nacimiento'])) ? $datos['fecha_nacimiento'] : null ,
             'rol_id' => $datos['rol_id'],
-            'ciudad_id' => 'nullable',
-            'estado_id' => 'nullable',
-            'pais_id' => 'nullable'
+            'ciudad_id' => null,
+            'estado_id' => null,
+            'pais_id' => null,
+            
 
         ]);
 
@@ -243,6 +255,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $usuario->password = Hash::make($datos['password']);
             $usuario->is_password = true;
+            $usuario->activo = true;
             $usuario->save();
 
             DB::commit();
@@ -407,63 +420,42 @@ class UserController extends Controller
 
         if(Auth::user()->rol->nombre == 'Desarrollador'){
 
-            $paginator = DB::table('users','u')
-                        ->selectRaw("
-                            concat(u.nombre,' ',u.apellido) as usuario,
-                            u.email,
-                            r.nombre as rol,
-                            u.id,
-                            u.imagen as avatar
+            $paginator = User::where([
+                ['nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+                ['email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+                ['apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+              
+            ])
+            ->whereHas('rol',function(Builder $q) use($datos){
+                $q->where('id',$datos['role'] ?: '>',0);
+            })
 
-                        ")
-                ->join('rols as r','u.rol_id','r.id')
-                ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
-                ->where([
-                        ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                        ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
+            ->with('rol')
+            ->orderBy($datos['sortBy'] ?: 'id', ($datos['sortDesc']) ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] ?: 10000);
 
-                ])
-                ->orderBy($datos['sortBy'] ?: 'u.id', ($datos['sortDesc']) ? 'desc' : 'asc')
-                ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
-
-               
         }else{
 
-            $paginator = DB::table('users', 'u')
-                ->selectRaw("
-                            concat(u.nombre,' ',u.apellido) as usuario,
-                            u.email,
-                            r.nombre as rol,
-                            u.id,
-                            u.imagen as avatar
-                        ")
-                ->join('rols as r', 'u.rol_id', 'r.id')
-                ->where('u.rol_id', $datos['role'] ? $datos['role'] : '>', 0)
-                ->where('r.nombre','!=','Desarrollador')
-                ->where([
-                    ['u.nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                    ['u.apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
-                ['r.nombre', 'LIKE', '%' . $datos['q'] . '%','OR'],
-                ])
-                ->orderBy($datos['sortBy'] ?: 'u.id' , ($datos['sortDesc']) ? 'desc' : 'asc')
-                ->paginate($datos['perPage'] == 0 ? 10000 : $datos['perPage']);
+            $paginator = User::where([
+                ['nombre', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+                ['email', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+                ['apellido', 'LIKE', '%' . $datos['q'] . '%', 'OR'],
+              
+            ])
+            ->whereHas('rol',function(Builder $q) use($datos){
+                $q->where('id',$datos['role'] ?: '>',0)->where('nombre','!=','Desarrollador') ;
+            })
+
+            ->with('rol')
+            ->orderBy($datos['sortBy'] ?: 'id', ($datos['sortDesc']) ? 'desc' : 'asc')
+            ->paginate($datos['perPage'] ?: 10000);
 
         }
 
         $usuarios = $paginator->items();
 
-
         foreach($usuarios as $key => $usuario){
-
-            if($usuario->avatar){
-               $usuarios[$key]->avatar =asset('storage/img-perfil/' . $usuario->avatar); 
-            } else{
-                $usuarios[$key]->avatar = asset('storage/img-perfil/default.jpg'); 
-            }
-
+            $usuario->cargar();
         }
 
         return response()->json([
@@ -509,7 +501,7 @@ class UserController extends Controller
 
         $datos = $request->all();
 
-        $paginator = User::whereHas('referidos',function(Builder $q) use($request) {
+        $paginator = User::whereHas('referidor',function(Builder $q) use($request) {
             $q->where('referidor_id',$request->user()->id);
         })
         ->orderBy($datos['sortBy'],'desc')

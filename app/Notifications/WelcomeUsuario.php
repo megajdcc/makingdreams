@@ -39,7 +39,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
         return [
             'database',
             'mail',
-            'broadcast'
+            // 'broadcast'
         ];
     }
 
@@ -66,7 +66,7 @@ class WelcomeUsuario extends Notification implements ShouldQueue
             'titulo' => 'Bienvenido a '.env('APP_NAME'),
             'avatar' => null,
             'usuario' => null,
-            'mensaje' => ['Hola '.$notifiable->getNombreCompleto().'!. Bienvenido a '.env('APP_NAME'), 'Puedes hacer varias cosas dentro del sistema, pero empieza por ajustar los datos de tu perfil.'],
+            'mensaje' => ['Hola '.$notifiable->getNombreCompleto().'!. Bienvenido a '.env('APP_NAME'), 'Puedes empezar por completar tus datos de perfil'],
             'type' => 'light-success', // light-info , light-success, light-danger, light-warning
             'btn' => true,
             'btnTitle' => 'Ir a mi perfil',

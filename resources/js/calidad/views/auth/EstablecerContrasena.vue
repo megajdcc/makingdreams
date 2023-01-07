@@ -7,10 +7,8 @@
          <!-- Brand logo-->
          <b-link class="brand-logo">
          
-            <img src="/storage/logotipo.png" alt="Logo" />
-         <!-- <h2 class="brand-text text-primary ml-1">
-            Boda y Playa
-         </h2> -->
+            <img :src="logotipo" alt="Logo" />
+ 
          </b-link>
          <!-- /Brand logo-->
         <b-card-title class="mb-1">
@@ -140,6 +138,8 @@ import {
 import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
+import useLogotipo  from '@core/utils/useLogotipo'
+
 export default {
   components: {
     VuexyLogo,
@@ -217,6 +217,17 @@ export default {
       })
     },
   },
+  
+  setup(){
+
+    const {
+      logotipo
+    } = useLogotipo()
+
+    return {
+      logotipo
+    }
+  }
 }
 </script>
 

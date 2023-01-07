@@ -87,21 +87,7 @@
     </b-tab>
     <!--/ change password tab -->
 
-    <!-- info -->
-    <b-tab>
-
-      <!-- title -->
-      <template #title>
-        <feather-icon
-          icon="InfoIcon"
-          size="18"
-          class="mr-50"
-        />
-        <span class="font-weight-bold">Información</span>
-      </template>
-
-      <cuenta-informacion-form />
-    </b-tab>
+  
 
   
 
@@ -122,7 +108,6 @@ export default {
     BTab,
     ConfiguracionGeneral,
     CambiarPassword,
-    CuentaInformacionForm,
     Invitados:() => import('./invitados/index.vue'),
     // FirmaDigital:() => import('./FirmaDigital.vue')
     UserTelefonos: () => import('./UserTelefonos.vue'),

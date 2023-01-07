@@ -1,14 +1,12 @@
 <template>
-  <div class="auth-wrapper auth-v1 px-2">
+
+<div class="auth-wrapper auth-v1 px-2">
 
     <b-link class="brand-logo">
-      <b-img src="/storage/logotipo.png" />
+      <b-img :src="logotipo" />
     </b-link>
 
-
     <div class="auth-inner py-2">
-
-
       <b-card class="mb-0" style="z-index:1">
 
         <b-card-title class="mb-1">
@@ -21,49 +19,24 @@
               <b-form class="auth-register-form mt-2" @submit.prevent="handleSubmit(registrar)"
                 style="max-height:310px;overflow-y:auto">
             
-                <b-form-group>
-                  
-                  <template #description>
-                    Si la compañía no existe en nuestro listado, solicite que afiliemos la misma enviandonos un correo
-                    a la siguiente dirección: <b-link href="mailto:info@rdsc.com" target="_blank">
-                      info@rdsc.com</b-link>
-                  </template>
-            
-                  <template #label>
-                    Compañía: <span class="text-danger">*</span>
-                  </template>
-            
-                  <validation-provider name="compania_id" rules="required" #default="{errors}">
-                    <v-select v-model="formulario.compania_id" :reduce="(option) => option.value" :options="companies">
-                    </v-select>
-                    <b-form-invalid-feedback>
-                      {{ errors[0] }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-            
-                </b-form-group>
-            
-                <b-form-group description="Puesto que ocupa en la empresa">
-                  <template #label>
-                    Puesto: <span class="text-danger">*</span>
-                  </template>
-            
-                  <validation-provider name="puesto" rules="required" #default="{errors}">
-                    <b-form-input v-model="formulario.puesto" :state="errors.length ? false : null" placeholder="Gerente..." />
-            
-                    <b-form-invalid-feedback>
-                      {{ errors[0] }}
-                    </b-form-invalid-feedback>
-            
-                  </validation-provider>
-                </b-form-group>
-            
-            
-                <el-divider content-position="left">
-                  Usuario
-                </el-divider>
-            
                 <!-- Datos de usuario -->
+
+                <!-- Nombre  de usuario-->
+                <b-form-group>
+                  <template #label>
+                    Nombre de usuario: <span class="text-danger">*</span>
+                  </template>
+                
+                  <validation-provider name="username" rules="required" #default="{valid,errors}">
+                    <b-form-input v-model="formulario.username" :state="valid" placeholder="@megajdcc" />
+                
+                    <b-form-invalid-feedback>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                
+                  </validation-provider>
+                </b-form-group>
+                
                 <!-- Nombre -->
                 <b-form-group>
                   <template #label>
@@ -103,13 +76,32 @@
                   </template>
             
                   <validation-provider name="telefono" rules="required" #default="{errors}">
-                    <b-form-input type="tel" v-model="formulario.telefono" :state="errors.length ? false : null" />
+                    <b-form-input type="tel" v-model="formulario.telefono" :state="errors.length ? false : null" v-mask="'+#############'" />
             
                     <b-form-invalid-feedback>
                       {{ errors[0] }}
                     </b-form-invalid-feedback>
             
                   </validation-provider>
+                </b-form-group>
+
+                <!-- Pais -->
+
+                <b-form-group>
+
+                  <template #label>
+                    Pais: <span class="text-danger">*</span>
+                  </template>
+
+                  <validation-provider name="pais_id" rules="required" #default="{errors,valid}">
+                    <v-select v-model="formulario.pais_id" :options="paises" :reduce="(option) => option.id" label="pais" />
+                  
+                    <b-form-invalid-feedback :state=valid>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                  
+                  </validation-provider>
+
                 </b-form-group>
             
                 <!-- email -->
@@ -130,7 +122,7 @@
                 </b-form-group>
             
                 <!-- password -->
-                <b-form-group label-for="password">
+                <!-- <b-form-group label-for="password">
                   <template #label>
                     Contraseña: <span class="text-danger">*</span>
                   </template>
@@ -149,10 +141,10 @@
                     </b-form-invalid-feedback>
             
                   </validation-provider>
-                </b-form-group>
+                </b-form-group> -->
             
                 <!-- Retype Password -->
-                <b-form-group label-for="retype_password">
+                <!-- <b-form-group label-for="retype_password">
                   <template #label>
                     Vuelva a escribir la contraseña: <span class="text-danger">*</span>
                   </template>
@@ -171,13 +163,13 @@
                     </b-form-invalid-feedback>
             
                   </validation-provider>
-                </b-form-group>
+                </b-form-group> -->
             
                 <!-- checkbox -->
                 <b-form-group>
                   <b-form-checkbox id="register-privacy-policy" v-model="formulario.status" name="checkbox-1">
                     Estoy de acuerdo con las
-                    <b-link>políticas y términos de privacidad</b-link>
+                    <b-link :to="{name:'public.terminos'}" target="_blank">políticas y términos de privacidad</b-link>
                   </b-form-checkbox>
                 </b-form-group>
             
@@ -205,6 +197,10 @@
 /* eslint-disable global-require */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
+import useLogotipo from '@core/utils/useLogotipo'
+
+import useDireccion from '@core/utils/useDireccion'
+
 import {
   BRow,
   BCol,
@@ -237,6 +233,7 @@ import vSelect from 'vue-select'
 import router from '@/router'
 
 export default {
+
   components: {
     VuexyLogo,
     BRow,
@@ -263,54 +260,84 @@ export default {
     vSelect
 
   },
+  
   mixins: [togglePasswordVisibility],
 
-  setup(){
+  props:['link'],
+
+  setup(props){
+
+    const {link} = toRefs(props)
+
     const passwordFieldType = ref('password')
     const sideImg = ref(require('@/assets/images/pages/register-v2.svg'));
     const formValidate = ref(null)
-    const {companias:empresas} = toRefs(store.state.compania)
-
-
-
-    onMounted(() => {
-      if(!empresas.value.length){
-        store.dispatch('compania/cargarCompanias')
-      }
-
-    })
 
     const formulario = ref({
-      status:false,
       nombre: '',
+      username: '',
       apellido: '',
-      email:'',
-      telefono:null,
+      email: '',
+      telefono: null,
+      pais_id:null,
       password: '',
-      retype_password:'',
-      compania_id:null,
-      puesto:'',
+      retype_password: '',
+      link:null
+    })
+
+
+    const {
+      logotipo
+    } = useLogotipo();
+
+    const {
+      paises,
+
+    } = useDireccion()
+
+    const verificarLink = () => {
+
+      axios.get(`/api/fetch/link/${link.value}`).then(({data}) => {
+
+        if(!data.result){
+          toast.info('El link de referencia no existe, si ya tiene un usuario, por favor ingrese ...',{position:'top-left'})
+          router.push({name:'login'})
+        }
+
+      }).catch(e => console.log(e))
+
+
+    }
+
+    onMounted(() => {
+      formulario.value.link  = link.value
+
+      verificarLink()
     })
 
     const registrar = ()  => {
 
       axios.post('/api/auth/register',formulario.value).then(({data}) => {
         if(data.result){
+
           toast({
             component: ToastificationContent,
             position: 'top-right',
-
-
             props: {
-              title: `Gracias por registrarte, puedes iniciar cuando lo desee`,
+              title: `Gracias por registrarte!. Te hemos enviado un correo para que confirmes tu cuenta y establezcas tú contraseña`,
               icon: 'CoffeeIcon',
               variant: 'success',
               text: ``,
+              duration:10000,
             },
+
           })
 
+          router.push({ name: 'login' })
+
+
         }
-        router.push({name:'login'})
+      
 
       }).catch(e => {
         console.log(e)
@@ -321,10 +348,28 @@ export default {
 
     }
 
+    const clearFormulario = () => {
+    
+      formulario.value = {
+        nombre: '',
+        username: '',
+        apellido: '',
+        email: '',
+        telefono: null,
+        pais_id: null,
+        password: '',
+        retype_password: '',
+        link: link.value
+      }
+    
+    }
+
     return {
+      
       formValidate,
       passwordFieldType,
       passwordToggleIcon: computed(() => passwordFieldType.value === 'password' ? 'EyeIcon' : 'EyeOffIcon'),
+
       imgUrl:computed(() => {
         if (store.state.appConfig.layout.skin === 'dark') {
             sideImg.value = require('@/assets/images/pages/register-v2-dark.svg')
@@ -338,22 +383,10 @@ export default {
 
       formulario,
       registrar,
-      companies:computed(() => {
-        return empresas.value.map((val) => { return { value: val.id, label: val.nombre } })
-      }),
-      clearFormulario:(ind) => {
-        formulario.value = {
-          status:false,
-          nombre: '',
-          apellido: '',
-          email: '',
-          telefono: null,
-          password: '',
-          retype_password: '',
-          compania_id: null,
-          puesto: '',
-        }
-      }
+      clearFormulario,
+      logotipo,
+      paises
+   
     }
 
   }

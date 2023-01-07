@@ -7,24 +7,19 @@ use Illuminate\Http\Request;
 
 class LinkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+    
+    public function verificar(string $link){
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $link = Link::where('link',$link)->first();
+        
+        if($link){
+            $result = true;
+        }else{
+            $result = false;
+        }
+
+        return response()->json(['result' => $result]);
+
     }
 
     /**
@@ -34,28 +29,6 @@ class LinkController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Link $link)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Link $link)
     {
         //
     }

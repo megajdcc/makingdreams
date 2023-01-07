@@ -12,7 +12,7 @@
 
          <b-row>
             <b-col cols="12">
-               <b-table ref="refUserListTable" class="position-relative" :items="fetchData" responsive :fields="tableColumns"
+               <b-table ref="refTable" class="position-relative" :items="fetchData" responsive :fields="tableColumns"
                   primary-key="id" :sort-by.sync="sortBy" show-empty empty-text="No matching records found"
                   :sort-desc.sync="isSortDirDesc" :busy="loading">
                
@@ -39,7 +39,7 @@
                         <b-link disabled class="font-weight-bold d-block text-nowrap">
                            {{ `${item.nombre} ${item.apellido}` }}
                         </b-link>
-                        <small class="text-muted" v-if="item.username">@{{ item.username }}</small>
+                        <small class="text-muted" v-if="item.username">{{ item.username }}</small>
                      </b-media>
                   </template>
                

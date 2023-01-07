@@ -377,7 +377,10 @@ export default {
 		fetchUsers({state,commit},searchQuery){
 				return new Promise((resolve, reject) => {
 					axios.post('/api/fetch/usuarios', searchQuery)
-						.then(response => resolve(response))
+						.then(({data}) => {
+							commit('setUsuarios', data.users)
+							resolve(data)
+						})
 						.catch(error => reject(error))
 				});
 		},

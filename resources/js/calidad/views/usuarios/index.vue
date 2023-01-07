@@ -26,7 +26,7 @@ export default {
 
 	setup(props){
 		store.dispatch('rol/cargarRoles');
-		store.dispatch('usuario/cargarUsuarios');
+		// store.dispatch('usuario/cargarUsuarios');
 
 		let {
 			routerTransition

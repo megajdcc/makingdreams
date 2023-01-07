@@ -8,6 +8,9 @@ use App\Http\Controllers\PaisController;
 use App\Http\Controllers\MovimientoController;
 
 use App\Http\Middleware\ConvertirNull;
+
+use App\Http\Controllers\LinkController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -166,7 +169,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* Sistema
     /**************************/
 
-    Route::get('sistema/fetch/data',[SistemaController::class,'fetch']);
     Route::resource('sistemas',SistemaController::class);
 
 
@@ -197,3 +199,6 @@ Route::get('get/ciudades/{estado}', function (Estado $estado) {
     $ciudades = $estado->ciudades;
     return response()->json($ciudades);
 });
+
+Route::get('sistema/fetch/data', [SistemaController::class, 'fetch']);
+Route::get('fetch/link/{link}',[LinkController::class,'verificar']);

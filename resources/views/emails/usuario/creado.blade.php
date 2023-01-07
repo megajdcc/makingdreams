@@ -1,7 +1,7 @@
 @component('mail::message')
 
 # Hola **{{ trim($Nombre) }}**  
-> Has recibido autorización para ingresar al Sistema de RDSC Transport
+> Has recibido autorización para ingresar al Sistema {{ env('APP_NAME') }}
 
 >Tus credenciales son:
 
@@ -11,5 +11,5 @@
 	Por favor establezca su contraseña a continuación
 @endcomponent  
 
-# ¡Te damos la bienvenida al equipo de RDSC Transport! #
+# ¡Te damos la bienvenida a la comunidad de {{ env('APP_NAME') }}! #
 @endcomponent

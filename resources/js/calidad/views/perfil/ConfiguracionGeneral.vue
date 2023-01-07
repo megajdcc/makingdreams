@@ -72,7 +72,7 @@
         <b-col sm="6">
         
           <b-form-group label="Nombre de usuario" label-for="username">
-            <b-form-input v-model="usuario.username" id="username" placeholder="Username"/>
+            <b-form-input v-model="usuario.username" id="username" placeholder="Username" readonly/>
           </b-form-group>
           
         </b-col>
@@ -85,6 +85,13 @@
               placeholder="Email"
             />
 
+          </b-form-group>
+        </b-col>
+
+        <b-col sm="6">
+          <b-form-group label-for="example-datepicker" label="Fecha de Nacimiento">
+            <flat-pickr v-model="formulario.fecha_nacimiento" class="form-control" name="date"
+              placeholder="Fecha de nacimiento" />
           </b-form-group>
         </b-col>
        
@@ -113,28 +120,19 @@
 
         <b-col cols="12">
 
+          <b-button-group>
 
-          <el-button type="primary" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="guardar" :loading="loading" icon="el-icon-position"> Guardar cambios</el-button>
-          <!-- <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            class="mt-2 mr-1"
-            @click="guardar"
-        
-          >
-           Guardar cambios
-          </b-button> -->
+            <b-button variant="primary" v-ripple.400="'rgba(255, 255, 255, 0.15)'" @click="guardar">
+              <feather-icon icon="SaveIcon" />
+              Guardar
+            </b-button>
+          
+            <b-button variant="dark" @click.prevent="resetForm">
+              Limpiar
+            </b-button>
 
-          <el-button type="info" @click.prevent="resetForm">Limpiar</el-button>
-          <!-- <b-button
-            v-ripple.400="'rgba(186, 191, 199, 0.15)'"
-            variant="outline-secondary"
-            type="reset"
-            class="mt-2"
-            @click.prevent="resetForm"
-          >
-            Limpiar
-          </b-button> -->
+          </b-button-group>
+         
         </b-col>
       </b-row>
     </b-form>
@@ -143,7 +141,7 @@
 
 <script>
 import {
-  BFormFile, BButton, BForm, BFormGroup, BFormInput, BRow, BCol, BAlert, BCard, BCardText, BMedia, BMediaAside, BMediaBody, BLink, BImg,
+  BFormFile, BButton, BForm, BFormGroup, BFormInput, BRow, BCol, BAlert, BCard, BCardText, BMedia, BMediaAside, BMediaBody, BLink, BImg,BButtonGroup
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 import { useInputImageRenderer } from '@core/comp-functions/forms/form-utils'
@@ -151,6 +149,7 @@ import { ref,computed,toRefs,onMounted } from 'vue'
 
 import { Notification } from 'element-ui';
 import store from '@/store'
+import flatPickr from 'vue-flatpickr-component'
 
 export default {
   components: {
@@ -169,6 +168,8 @@ export default {
     BMediaAside,
     BMediaBody,
     BLink,
+    flatPickr,
+    BButtonGroup
   },
   directives: {
     Ripple,
@@ -275,3 +276,7 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+@import '~@core/scss/vue/libs/vue-flatpicker.scss';
+</style>

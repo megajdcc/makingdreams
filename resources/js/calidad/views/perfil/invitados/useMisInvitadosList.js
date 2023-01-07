@@ -18,7 +18,6 @@ export default function useMisInvitadosList(){
       perPageOptions,
       currentPage,
       perPage,
-      searchQuery,
       sortBy,
       isSortDirDesc,
       refTable,
@@ -26,10 +25,6 @@ export default function useMisInvitadosList(){
       dataMeta,
       refetchData,
    } = useFilterTable();
-
-   watch([currentPage, perPage], () => {
-      refetchData()
-   })
 
    onMounted(() => refetchData())
 

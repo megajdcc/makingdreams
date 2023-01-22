@@ -7,7 +7,7 @@
          <!-- Brand logo-->
          <b-link class="brand-logo">
          
-            <img src="/storage/logotipo.png" alt="Logo" />
+            <img :src="logotipo" alt="Logo" />
          <!-- <h2 class="brand-text text-primary ml-1">
             Boda y Playa
          </h2> -->
@@ -141,6 +141,7 @@ import {
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import useLogotipos from '@core/utils/useLogotipo'
 
 export default {
   components: {
@@ -241,6 +242,18 @@ export default {
       })
     },
   },
+
+  setup(){
+
+    const {
+      logotipo
+    } = useLogotipos();
+
+    return {
+      logotipo
+    }
+  }
+
 }
 </script>
 

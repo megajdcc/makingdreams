@@ -47,7 +47,8 @@ class User extends Authenticatable
         'token',
         'ciudad_id',
         'estado_id',
-        'pais_id'
+        'pais_id',
+        'backoffice', // Boolean
     ];
 
     /**
@@ -69,7 +70,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_password' => 'boolean',
-        'activo' => 'boolean'
+        'activo' => 'boolean',
+        'backoffice' => 'boolean'
     ];
 
 
@@ -202,6 +204,10 @@ class User extends Authenticatable
         ]);
     }
 
+    public function pagos(){
+        return $this->hasMany(Pago::class,'usuario_id','id');
+    }
+
 
     public function cargar() : User{
         $this->cuenta;
@@ -214,7 +220,7 @@ class User extends Authenticatable
         $this->rol;
         $this->avatar = $this->getAvatar();
         $this->telefono = $this->telefonos->where('principal',true)->first()?->numero;
-
+        $this->pagos;
         return $this;
     }
 

@@ -33,5 +33,23 @@ class EstadoCuenta extends Model
         
     }
 
+
+    public function addMovimiento(array $datos ):Movimiento{
+        
+        $movimiento = Movimiento::create([...$datos,...['estado_cuenta_id' => $this->id]]);
+
+        if($movimiento->tipo_movimiento === 1){
+            $this->saldo += $movimiento->monto;
+
+        }else{
+            $this->saldo -= $movimiento->monto;
+        }
+
+        $this->save();
+
+
+        return $movimiento;
+    }
+
     
 }

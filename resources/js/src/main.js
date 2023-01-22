@@ -201,6 +201,11 @@ require('datatables.net-responsive-bs4');
 // window.conekta = require('conekta');
 // conekta.api_key = 'key_OsW8LuyVL6ESxfQWduVKzEw';
 // conekta.locale = 'es';
+
+
+
+
+
 let app = new Vue({
   router,
   store,

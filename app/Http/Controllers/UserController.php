@@ -691,7 +691,33 @@ class UserController extends Controller
         return response()->json(['result' => $result, 'usuario' => $usuario]);
     }
 
+    public function aprobarPago(Request $request,User $usuario){
 
+        // dd($request);
+
+        try{
+            DB::beginTransaction();
+            $cuenta = $usuario->cuenta;
+
+            // $cuenta->addMovimiento([
+            //     'monto' => 3.5,
+
+            // ]);
+
+            DB::commit();
+            $result = true;
+            
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result =false;
+
+        }
+        $usuario->cargar();
+
+        return response()->json(['result' => $result,'usuario' => $usuario]);
+
+
+    }
 
 
 

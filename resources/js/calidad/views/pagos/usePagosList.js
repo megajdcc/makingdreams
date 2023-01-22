@@ -1,28 +1,20 @@
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed,onMounted } from 'vue'
 import store from '@/store'
-
-// Notification
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
 import useFilterTable from '@core/utils/useFilterTable'
+
 export default function usePagosList() {
-   const refPagosListTable = ref(null)
 
    // Table Handlers
    const tableColumns = [
-      { key: 'show_details', sortable: true, label: '#', width: '50px', isRowHeader: true, },
-      { key: 'forma_pago', sortable: true, label: "Forma de pago" },
+      { key:'id', label:'#'},
+      { key: 'concepto', sortable: true, label: "Concepto" },
+      { key: 'monto', sortable: true, label: "Monto del pago" },
       { key: 'status', sortable: true, label: "Status" },
-      { key: 'nro_referencia', sortable: true, label: "Nro de pago" },
-      { key: 'monto', sortable: true, label: "Monto" },
-      { key: 'status_pago', sortable: false, label: "Status" },
-
+      { key: 'metodo', sortable: true, label: "Metodo de pago" },
+      { key: 'usuario', sortable: false, label: "Usuario",sortBy:'id' },
       { key: 'actions', sortable:false, variant: 'primary', },
    ]
-   const totalPagos = ref(0)
-   const bodaFilter = ref(null)
-   const formaPagoFilter = ref(null)
-   const pags = ref([])
+
 
    const {
       perPageOptions,
@@ -30,97 +22,65 @@ export default function usePagosList() {
       perPage,
       searchQuery,
       sortBy,
-      isSortDirDesc
+      isSortDirDesc,
+      refTable,
+      total,
+      dataMeta,
+      refetchData,
    } = useFilterTable();
 
-   const rango = ref([])
 
-   const statusPago = ref(null)
+   const fetchData = (ctx, next) => {
 
-   const statusPagoOptions = [
-      {id:0,label:'Por Comprobar'},
-      { id: 1, label: 'Comprobada' },
-      { id: 2, label: 'Aprobada' },
-      { id: 3, label: 'Rechazada' },
-      { id: 4, label: 'Pendiente' },
-      { id: 5, label: 'Declinada' },
-   ]
-
-   const dataMeta = computed(() => {
-      const localItemsCount = refPagosListTable.value ? refPagosListTable.value.localItems.length : 0
-
-      return {
-         from: perPage.value * (currentPage.value - 1) + (localItemsCount ? 1 : 0),
-         to: perPage.value * (currentPage.value - 1) + localItemsCount,
-         of: totalPagos.value,
-      }
-
-   })
-
-   const refetchData = () => {
-      refPagosListTable.value.refresh()
-   }
-
-   watch([currentPage, perPage, searchQuery, bodaFilter, formaPagoFilter,statusPago,rango], () => {
-      refetchData()
-   })
-
-   const fetchPagos = (ctx, callback) => {
-
-      store.dispatch('pago/fetchPagosList', {
+      store.dispatch('pago/fetchData', {
          q: searchQuery.value,
          perPage: perPage.value,
          page: currentPage.value,
          sortBy: sortBy.value,
-         sortDesc: isSortDirDesc.value,
-         boda: bodaFilter.value,
-         formaPago:formaPagoFilter.value,
-         statusPago:statusPago.value,
-         rango:rango.value
+         isSortDirDesc: isSortDirDesc.value,
       })
-         .then(response => {
-            const { pagos, total } = response.data
-
-            callback(pagos)
-            pags.value = pagos
-            totalPagos.value = total
+         .then(({total: all, pagos}) => {
+            total.value = all
+            next(pagos)
     
          })
          .catch((e) => {
 
-            // console.log(e)
-            toast({
-               component: ToastificationContent,
-               props: {
-                  title: 'Error trayendo la data',
-                  icon: 'AlertTriangleIcon',
-                  variant: 'danger',
-               },
-            })
+               toast.info('Error Trayendo Data')
 
          })
    }
 
+   
+   const eliminar = (pago_id) => {
 
+      store.dispatch('pago/eliminar',pago_id).then(({result}) => {
+
+         if(result){
+            toast.success('Se ha eliminado con éxito el pago', {position:'bottom-right'})
+
+            refetchData()
+         }
+      })
+
+   }
 
    return {
-      fetchPagos,
-      tableColumns,
-      perPage,
-      currentPage,
-      totalPagos,
-      dataMeta,
       perPageOptions,
+      currentPage,
+      perPage,
       searchQuery,
       sortBy,
       isSortDirDesc,
-      refPagosListTable,
+      refTable,
+      total,
+      dataMeta,
       refetchData,
-      bodaFilter,
-      formaPagoFilter,
-      pags,
-      statusPago,
-      statusPagoOptions,
-      rango
+
+      fetchData,
+      tableColumns,
+      eliminar
+
+
    }
 }

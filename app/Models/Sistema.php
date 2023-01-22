@@ -2,12 +2,24 @@
 
 namespace App\Models;
 
+use App\Trais\hasCuenta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class Sistema extends Model
 {
-    use HasFactory;
+    use HasFactory,hasCuenta;
+
+    protected readonly string $model_type;
+
+
+
+    public function __construct()
+    {
+        $this->model_type = 'App\Models\Sistema';
+    }
 
     protected $fillable = [
         'nombre',// making dreams
@@ -15,9 +27,6 @@ class Sistema extends Model
         'monto_inicial',
         'logotipo_claro',
         'logotipo_oscuro',
-    ];
-
-
-        
+    ];    
     
 }

@@ -105,6 +105,65 @@
                   </b-row>
 
                   <b-row>
+                     <b-col cols="12">
+                        <b-button-group size="sm">
+
+                           <b-button variant="primary" @click="agregarCuenta" title="Agregar Cuenta">
+                              Agregar Cuenta Bancaria
+                           </b-button>
+                        </b-button-group>
+
+
+                           <table class="table table-sm table-hover table-borderless mt-1">
+                              <thead>
+                                 <th>Entidad bancaria</th>
+                                 <th>Número de cuenta</th>
+                                 <th></th>
+                              </thead>
+
+                              <tbody>
+                                 <tr v-for="(cuenta,i) in formulario.cuentas" :key="i">
+                                    <td>
+                                       <validation-provider name="entidad" rules="required" #default="{valid,errors}">
+                                          <b-form-input v-model="cuenta.entidad" :state="valid" placeholder="Banco"/>
+                                          <b-form-invalid-feedback :state="valid">
+
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
+                                    </td>
+
+                                    <td>
+                                          <validation-provider name="numero" rules="required" #default="{valid,errors}">
+                                             <b-form-input v-model="cuenta.numero" :state="valid" placeholder="Numero de cuenta" />
+                                             <b-form-invalid-feedback :state="valid">
+                                                {{ errors[0] }}
+                                             </b-form-invalid-feedback>
+                                          </validation-provider>
+                                    </td>
+
+                                    <td>
+
+                                       <b-button-group size="sm">
+                                          <b-button variant="primary" @click="agregarCuentaBancaria(cuenta)" title="Agregar Cuenta">
+                                             Agregar
+                                          </b-button>
+                                          <b-button variant="danger" @click="eliminarCuenta(cuenta,i)" size="sm">
+                                             <feather-icon icon="TrashIcon" />
+                                          </b-button>
+                                       </b-button-group>
+                                     
+                                    </td>
+
+                                 </tr>
+                              </tbody>
+                           </table>
+                     </b-col>
+                  </b-row>
+
+                  <el-divider></el-divider>
+
+                  <b-row>
                      <b-col>
                      <b-form-group>
                      
@@ -271,7 +330,43 @@ export default {
       
       }
 
-     
+      const agregarCuenta = () => {
+
+         store.commit('sistema/agregarCuenta')
+
+      }
+      const eliminarCuenta = (cuenta,i)=> {
+
+         if(cuenta.id){
+            store.dispatch('sistema/eliminarCuenta',cuenta.id).then(({result}) => {
+
+               if(result){
+                  toast.success('Se ha eliminado con éxito la cuenta')
+                  // store.commit('sistema/eliminarCuenta',i)
+               }else{
+                  toast.info('No se pudo eliminar, intente de nuevo')
+
+               }
+            })
+         }else{
+            store.commit('sistema/eliminarCuenta', i)
+
+         }
+        
+      }
+
+
+      const agregarCuentaBancaria =(cuenta) => {
+
+         store.dispatch('sistema/agregarCuenta',cuenta).then(({result}) => {
+            if(result){
+               toast.success('Hemos agregado con éxito la cuenta')
+            }else{
+               toast.info('No se pudo agregar la cuenta, inténtelo de nuevo')
+            }
+         })
+
+      } 
 
       return {
          guardar,
@@ -287,7 +382,11 @@ export default {
          refLogoOscuro,
          optionsEditor,
          logotipo_claro,
-         logotipo_oscuro
+         logotipo_oscuro,
+         agregarCuenta,
+         agregarCuentaBancaria,
+
+         eliminarCuenta
       }
 
    }

@@ -8,6 +8,14 @@ export default [
       icon: 'UsersIcon',
    },
 
+   {
+      title:'Pagos',
+      route:'pagos.list',
+      action:'read',
+      resource:'pagos admin',
+      
+   },
+
 
    {
       title: 'Ajustes',

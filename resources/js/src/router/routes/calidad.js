@@ -583,6 +583,55 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Donacion de backoffice
+   /*************************************** */
+   {
+      path:'/donacion-backoffice',
+      component:() => import('views/pagos/donacion.vue'),
+      name:'donacion.backoffice',
+      meta:{
+         resource:'donaciones',
+         action:'read',
+         pageTitle:'Realizar donación al programa',
+         navActiveLink:'home',
+         breadcrumb:[
+            {
+               text:'Home',
+               to:{name:'home'}
+            },
+            {
+               text:'Pagar donación',
+               active:true
+            }
+         ]
+      }
+   },
+
+   /*****************************************/
+   /* Pagos 
+   /*************************************** */
+   {
+      path:'/pagos',
+      component:() => import('views/pagos/index.vue'),
+      children:[
+         {
+            path:'',
+            name:'pagos.list',
+            component:() => import('views/pagos/lists.vue'),
+            meta:{
+               resource:'pagos admin',
+               action:'read',
+               pageTitle:'Pagos',
+               breadcrumb:[
+                  {text:'Home',to:{name:'home'}},
+                  { text: 'Pagos', active:true },
+
+               ]
+            }
+         }
+      ]
+   },
 
 
    /*****************************************/

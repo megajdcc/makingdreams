@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, HomeController, SistemaController};
+use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, HomeController, PagoController, SistemaController};
 use App\Models\Pais;
 use App\Models\Estado;
 use App\Http\Controllers\PaisController;
@@ -123,6 +123,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('usuario/perfil/referidos',[UserController::class,'misReferidos']);
 
+    Route::put('usuario/{usuario}/aprobar/pago/backoffice',[UserController::class,'aprobarPago']);
+
     /**************************/
     /* Home
     /**************************/
@@ -164,7 +166,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /**************************/
     /* Sistema
     /**************************/
-
+    Route::put('sistemas/{sistema}/agregar/cuenta',[SistemaController::class,'agregarCuenta']);
+    Route::delete('sistemas/{sistema}/eliminar/cuenta/{cuenta}',[SistemaController::class,'quitarCuenta']);
     Route::resource('sistemas',SistemaController::class);
 
 
@@ -175,6 +178,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/movimientos/fetch/data', [MovimientoController::class, 'fetchData']);
 
+
+    /*****************************/
+    /* Pagos
+    /*****************************/
+
+    Route::post('pagos/fetch/data',[PagoController::class,'fetchData']);
+    Route::resource('/pagos',PagoController::class);
 
 
 });

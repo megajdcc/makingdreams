@@ -27,7 +27,11 @@ export default {
 				pais:null,
 				link:null,
 				codigo_referidor:null,
-				datos_bancarios: []
+				datos_bancarios: [],
+				telefonos: [],
+				backoffice: false,
+				pagos:[]
+
 
 			},
 
@@ -52,7 +56,12 @@ export default {
 				pais: null,
 				link: null,
 				codigo_referidor: null,
-				datos_bancarios:[]
+				datos_bancarios:[],
+				telefonos:[],
+				backoffice: false,
+				pagos: []
+
+
 
 			},
 
@@ -105,7 +114,11 @@ export default {
 				estado: null,
 				pais: null,
 				link: null,
-				codigo_referidor: null
+				codigo_referidor: null,
+				datos_bancarios: [],
+				telefonos: [],
+				backoffice: false,
+				pagos: []
 
 			}
 		},
@@ -550,6 +563,19 @@ export default {
 			})
 
 		},
+
+		pagoBackOffice({commit,state},datos){
+			return new Promise((resolve,reject) => {
+				axios.put(`/api/usuario/${state.usuario.id}/aprobar/pago/backoffice`,datos).then(({data}) => {
+
+					if(data.result){
+						commit('updatePerfil',data.usuario)
+					}
+
+					resolve(data.usuario)
+				}).catch(e => reject(e))
+			})
+		}
 
 
 

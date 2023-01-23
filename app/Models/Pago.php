@@ -17,8 +17,10 @@ class Pago extends Model
         'concepto',
         'detalles',
         'metodo', // 1 => paypal, 2 => wompi 3 => transferencia 
+        'comprobante'
     ];
 
+    
     protected $casts = [
         'aprobado' => 'boolean',
         'detalles' => 'array'

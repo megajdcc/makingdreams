@@ -184,6 +184,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
 
     Route::post('pagos/fetch/data',[PagoController::class,'fetchData']);
+    Route::get('pagos/{pago}/aprobar/pago',[PagoController::class,'aprobarPago']);
     Route::resource('/pagos',PagoController::class);
 
 

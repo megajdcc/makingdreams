@@ -56,6 +56,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'comprobante_pago' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/comprobantes'),
+            'url' => env('APP_URL') . '/storage/comprobantes',
+            'visibility' => 'public',
+        ],
+
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

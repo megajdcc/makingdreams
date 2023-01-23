@@ -54,12 +54,17 @@ export default function usePagosList() {
    
    const eliminar = (pago_id) => {
 
+    
+
       store.dispatch('pago/eliminar',pago_id).then(({result}) => {
 
          if(result){
             toast.success('Se ha eliminado con éxito el pago', {position:'bottom-right'})
 
             refetchData()
+         }else{
+            toast.info('No se pudo eliminar el pago , inténte de nuevo', { position: 'bottom-right' })
+
          }
       })
 

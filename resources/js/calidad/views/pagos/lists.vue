@@ -1,58 +1,79 @@
 <template>
-   <listado :actions="actions" isTable>
-         <template #contenido="{eliminar}">
+   <section>
+      <listado :actions="actions" isTable>
+            <template #contenido>
 
-            <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by.sync="sortBy"
-               empty-text="No se encontró ningún pago" :sort-desc.sync="isSortDirDesc" sticky-header="700px"
-               :no-border-collapse="false" small :busy="loading" show-empty class="mt-1">
+               <b-card class="mt-1">
+                  <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by.sync="sortBy"
+                     empty-text="No se encontró ningún pago" :sort-desc.sync="isSortDirDesc" sticky-header="700px"
+                     :no-border-collapse="false" small :busy="loading" show-empty >
+                  
+                  
+                     <template #cell(monto)="{item}">
+                        {{ item.monto | currency }}
+                     </template>
+                  
+                  
+                  
+                  
+                     <template #cell(usuario)="{item}">
+                        <span class="text-nowrap">
+                           {{ item.usuario.nombre }} {{ item.usuario.apellido }}
+                        </span>
+                     </template>
+                  
+                     <template #cell(status)="{item}">
+                        <span class="text-nowrap">
+                           {{ getStatusPago(item.status) }}
+                        </span>
+                     </template>
+                  
+                     <template #cell(metodo)="{item}">
+                        <span class="text-nowrap">
+                           {{ getMetodoPago(item.metodo) }}
+                        </span>
+                     </template>
+                  
+                  
+                  
+                  
+                     <!-- Column: Actions -->
+                     <template #cell(actions)="{ item }">
+                  
+                        <b-button-group size="sm">
+                  
+                  
+                           <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Pago"
+                              v-if="$can('delete','pagos admin')">
+                              <feather-icon icon="TrashIcon" />
+                           </b-button>
 
+                           <b-button  @click="verComprobante(item.comprobante)" variant="dark" title="Ver Comprobante" v-if="$can('read','pagos admin') && item.metodo === 3">
+                             Comprobante
+                           </b-button>
 
-               <template #cell(monto)="{item}">
-                  {{  item.monto | currency  }}
-               </template>
+                           <b-button @click="aprobar(item.id)" variant="primary" title="Aprobar Pago"
+                              v-if="$can('write','pagos admin') && item.metodo === 3 && !item.aprobado">
+                              Aprobar
+                           </b-button>
 
-              
+                  
+                        </b-button-group>
+                  
+                     </template>
+                  
+                  </b-table>
+               </b-card>
+               
 
+            </template>
 
-               <template #cell(usuario)="{item}">
-                  <span class="text-nowrap">
-                     {{ item.usuario.nombre  }} {{ item.usuario.apellido }}
-                  </span>
-               </template>
+          
+      </listado> 
 
-               <template #cell(status)="{item}">
-                  <span class="text-nowrap">
-                     {{ getStatusPago(item.status) }}
-                  </span>
-               </template>
+      <show-imagen :url="urlImagen" :showDialog.sync="showDialog" :tipo="tipoImagen"></show-imagen>
 
-               <template #cell(metodo)="{item}">
-                  <span class="text-nowrap">
-                     {{ getMetodoPago(item.metodo) }}
-                  </span>
-               </template>
-
-
-
-
-               <!-- Column: Actions -->
-               <template #cell(actions)="{ item }">
-            
-                  <b-button-group size="sm">
-         
-            
-                     <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Pago" v-if="$can('delete','pagos admin')">
-                        <feather-icon icon="TrashIcon" />
-                     </b-button>
-            
-                  </b-button-group>
-            
-               </template>
-            
-            </b-table>
-
-         </template>
-   </listado>   
+     </section>
 </template>
 
 
@@ -61,15 +82,18 @@
 import Listado from 'components/Listado.vue'
 import usePagosList from './usePagosList'
 
+import ShowImagen  from 'components/ShowImagen.vue'
+import { getExt } from '@core/utils/utils'
 import {
    BTable,
    BButtonGroup,
-   BButton
+   BButton,
+   BCard
 } from 'bootstrap-vue'
 
 import store from '@/store'
 
-import {computed,onMounted,watch} from 'vue'
+import {computed,onMounted,watch,ref} from 'vue'
 
 export default {
    
@@ -77,7 +101,9 @@ export default {
       Listado,
       BTable,
       BButtonGroup,
-      BButton
+      BButton,
+      BCard,
+      ShowImagen
    },
 
 
@@ -85,8 +111,10 @@ export default {
 
 
       const actions = usePagosList();
+      const urlImagen = ref('')
+      const showDialog = ref(false)
+      const tipoImagen = ref(null)
 
-     
       const {
          isSortDirDesc,
          sortBy,
@@ -118,6 +146,32 @@ export default {
          return metodos[metodo - 1]
       } 
 
+      const verComprobante = (comprobante) => {
+
+         
+
+         urlImagen.value = `/storage/comprobantes/${comprobante}`
+         tipoImagen.value = getExt(comprobante)
+         showDialog.value = true
+      }
+
+      const aprobar = (pago_id) => {
+
+
+         store.dispatch('pago/aprobarPago',pago_id).then(({result}) => {
+
+            if(result){
+               toast.success('El pago se ha aprobado con éxito')
+               refetchData();
+            }else{
+               toast.info('El pago no se pudo aprobar, inténtelo de nuevo mas tarde')
+            }
+
+
+         })
+
+      } 
+
       return {
          isSortDirDesc,
          sortBy,
@@ -135,6 +189,11 @@ export default {
          actions,
          getStatusPago,
          getMetodoPago,
+         verComprobante,
+         urlImagen,
+         showDialog,
+         tipoImagen,
+         aprobar,
          loading:computed(() => store.state.loading)
 
       }

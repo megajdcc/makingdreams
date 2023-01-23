@@ -31,7 +31,7 @@
           <h2 class="font-weight-bolder text-center">Bienvenido {{ `${usuario.nombre} ${usuario.apellido} (${usuario.username})` }}</h2>
 
           <p class="text-center p-1 ">
-            Ahora puedes unirte a la junta de {{ 6 | currency }}, será tu primera etapa y podrás escoger tu cupo en el tablero, recuerda que tus siguientes donaciones saldran de las que recibas, inciaras una gran experiencia en esta gran comunidad.
+            Ahora puedes unirte a la junta de {{ 6 | currency }}, será tu primera etapa y podrás escoger tu cupo en el tablero, recuerda que tus siguientes donaciones saldran de las que recibas, iniciaras una gran experiencia en esta gran comunidad.
           </p>
           
           <h2 class="text-danger text-center font-weight-bolder">¡Atención!</h2>

@@ -66,7 +66,56 @@
       
       
          <b-card>
-      
+            <b-container fluid>
+               <b-row>
+                  <b-col cols="12" md="6">
+                     <el-divider content-position="left">Cuentas Bancarias disponibles</el-divider>
+                     
+                     <br>
+
+                     <p><strong class="text-danger">Nota:</strong> Despues de haber realizado la transferencia y cargado su comprobante, no mas de 24 horas nos tardamos en verificarla... </p>
+                     <table class="table table-hover table-sm">
+                        <thead>
+                           <th>Entidad Bancaria</th>
+                           <th>Número de cuenta</th>
+                        </thead>
+
+                        <tbody>
+                           <tr v-for="(cuenta,i) in cuentas" :key="i">
+                              <td>{{ cuenta.entidad }}</td>
+                              <td>{{ cuenta.numero  }}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </b-col>
+
+                  <b-col cols="12" md="6">
+                     <b-form-group >
+
+                        <template #label>
+                           Comprobante: <span class="text-danger">*</span>
+                        </template>
+
+                        <validation-provider name="comprobante" rules="required" #default="{valid,errors}">
+                              <b-form-file v-model="formulario.comprobante" :state="valid" browse-text="Buscar Comprobante" accept="image/*"> </b-form-file>
+
+                              <b-form-invalid-feedback :state="valid">
+                                 {{ errors[0]  }}
+                              </b-form-invalid-feedback>
+                        </validation-provider>
+                     </b-form-group>
+
+                     <b-button variant="primary" title="Guardar" @click="cargarPagoTransferencia">
+                        <feather-icon icon="SaveIcon"></feather-icon>
+                        Guardar
+                     </b-button>
+                   
+                  </b-col>
+
+
+               </b-row>
+
+            </b-container>
          </b-card>
       </b-tab>
 
@@ -93,7 +142,11 @@ import {
    BTab,
    BImg,
    BFormGroup,
-   BFormInvalidFeedback
+   BFormInvalidFeedback,
+   BCol,
+   BContainer,
+   BRow,
+   BFormFile
 
 } from 'bootstrap-vue'
 import { optionsCurrency } from '@core/utils/utils'
@@ -129,6 +182,10 @@ export default {
       BFormGroup,
       BFormInvalidFeedback,
       PayPal,
+      BCol,
+      BContainer,
+      BRow,
+      BFormFile,
       CurrencyInput:() => import('components/CurrencyInput.vue')
 
    },
@@ -142,7 +199,13 @@ export default {
       const LogoPaypal = require('@/assets/images/logos/logo-Paypal.png');
       const monto = ref(0)
       
+      const {pago :formulario} = toRefs(store.state.pago)
+
+      store.dispatch('sistema/fetch').then((sistem) => {
+         store.commit('sistema/update', sistem)
+      })
       const cargarForm = () => {
+
          monto.value = sistema.value.monto_inicial
       }
 
@@ -189,10 +252,33 @@ export default {
 
       }
 
+      const cargarPagoTransferencia = () => {
+
+         formulario.value.monto = monto.value
+         formulario.value.status = 1
+         formulario.value.usuario_id = usuario.value.id
+         formulario.value.concepto = 'Donación por derecho a Backoffice, pago realizado por Transferencia Bancaria';
+         formulario.value.metodo = 3
+        
+         store.dispatch('pago/guardar',formulario.value).then(({result}) => {
+
+            if(result){
+               toast.success('Se ha cargado con éxito el pago, en las proximas horas estaremos verificado su pago, y podrá continuar disfrutando del panel',{position:'bottom-right'})
+
+               store.commit('pago/clear');
+               formulario.value.comprobante = null
+
+            }else{
+               toast.info('No se pudo cargar el pago, inténte de nuevo', { position: 'bottom-right' })
+            }
+         })
+      }  
+
 
       return {
          loading:computed(() => store.state.loading),
          sistema,
+         cuentas:computed(() => sistema.value.cuentas),
          LogoWompi,
          LogoPaypal,
          usuario,
@@ -201,7 +287,9 @@ export default {
          monto,
          credentialsPaypal,
          pagar,
-         pagoCompletadoPaypal
+         pagoCompletadoPaypal,
+         formulario,
+         cargarPagoTransferencia
 
       }
    }

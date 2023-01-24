@@ -31,6 +31,15 @@ export default [
          },
 
          {
+            title: 'Etapas',
+            route: 'etapa.list',
+            action: 'read',
+            resource: 'etapas',
+            icon: 'ListIcon'
+         },
+
+
+         {
             title: 'Roles',
             // exact:false,
             route: 'listar.roles',

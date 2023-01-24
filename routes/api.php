@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, HomeController, PagoController, SistemaController};
+use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, EtapaController, HomeController, PagoController, SistemaController};
 use App\Models\Pais;
 use App\Models\Estado;
 use App\Http\Controllers\PaisController;
@@ -186,6 +186,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('pagos/fetch/data',[PagoController::class,'fetchData']);
     Route::get('pagos/{pago}/aprobar/pago',[PagoController::class,'aprobarPago']);
     Route::resource('/pagos',PagoController::class);
+
+    /*****************************/
+    /* Etapas
+    /*****************************/
+
+    Route::post('etapas/fetch/data', [EtapaController::class, 'fetchData']);
+    Route::get('etapas/{etapa}/fetch/data',[EtapaController::class,'fetch']);
+    Route::get('etapas/get/all',[EtapaController::class,'getAll']);
+    Route::resource('etapas', EtapaController::class);
+
 
 
 });

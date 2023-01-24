@@ -633,6 +633,73 @@ export default [
       ]
    },
 
+   /*****************************************/
+   /* Etapas 
+   /*************************************** */
+   {
+      path: '/etapas',
+      component: () => import('views/etapas/index.vue'),
+      children: [
+         {
+            path: '',
+            name: 'etapa.list',
+            component: () => import('views/etapas/list.vue'),
+            meta: {
+               resource: 'etapas',
+               action: 'read',
+               pageTitle: 'Etapas',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' } },
+                  { text: 'Etapas', active: true },
+
+               ]
+            }
+         },
+
+          {
+            path: 'create',
+            name: 'etapa.create',
+            component: () => import('views/etapas/create.vue'),
+            meta: {
+               resource: 'etapas',
+               action: 'read',
+               pageTitle: 'Crear Etapa',
+               navActiveLink:'etapa.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' } },
+                  { text: 'Etapas', active: false,to:{name:'etapa.list'} },
+                  { text: 'Crear', active: true },
+
+
+               ]
+            }
+         },
+
+         {
+            path: ':id/edit',
+            name: 'etapa.edit',
+            props:true,
+            component: () => import('views/etapas/edit.vue'),
+            meta: {
+               resource: 'etapas',
+               action: 'read',
+               pageTitle: 'Editar Etapa',
+               navActiveLink: 'etapa.list',
+               breadcrumb: [
+                  { text: 'Home', to: { name: 'home' } },
+                  { text: 'Etapas', active: false, to: { name: 'etapa.list' } },
+                  { text: 'Editar', active: true },
+
+
+               ]
+            }
+         }
+
+
+      ]
+   },
+
+
 
    /*****************************************/
    /* PAGINA DE Mantenimiento

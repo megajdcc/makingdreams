@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\PagoAprobado;
 
 class PagoController extends Controller
 {
@@ -223,6 +224,8 @@ class PagoController extends Controller
             $usuario->save();
 
             // Enviar notification, Email al usuario
+
+            $usuario->notify(new PagoAprobado($pago));
 
             DB::commit();
             $result = true;

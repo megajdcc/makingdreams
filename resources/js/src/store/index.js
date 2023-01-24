@@ -44,6 +44,11 @@ import movimiento from './modules/estado_cuentas/movimiento.js';
 
 // Pagos
 import pago from './modules/pagos/pago.js'
+
+// Etapa
+
+import etapa from './modules/etapa.js'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -142,6 +147,7 @@ export default new Vuex.Store({
     cuenta,
     movimiento,
     pago,
+    etapa
     
   },
 

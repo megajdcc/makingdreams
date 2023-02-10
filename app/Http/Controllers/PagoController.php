@@ -230,6 +230,7 @@ class PagoController extends Controller
             DB::commit();
             $result = true;
             $pago->load('usuario');
+            $usuario->aprobarPermiso('juntas');
 
         } catch (\Throwable $th) {
             DB::rollBack();

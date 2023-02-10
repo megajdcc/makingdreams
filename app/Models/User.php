@@ -208,6 +208,10 @@ class User extends Authenticatable
         return $this->hasMany(Pago::class,'usuario_id','id');
     }
 
+    public function tableros(){
+        return $this->hasMany(Tablero::class,'beneficiario_id','id');
+    }
+
 
     public function cargar() : User{
         $this->cuenta;
@@ -221,6 +225,7 @@ class User extends Authenticatable
         $this->avatar = $this->getAvatar();
         $this->telefono = $this->telefonos->where('principal',true)->first()?->numero;
         $this->pagos;
+        $this->tableros;
         return $this;
     }
 

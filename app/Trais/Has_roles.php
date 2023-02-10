@@ -28,6 +28,27 @@ trait Has_roles
 
    }
 
+   public function asignarPermiso($permisos , $actions = ['read']){
+
+      foreach ($permisos as $key => $permiso) {
+         $this->permisos()->attach($permiso->id, ['action' => json_encode($actions)]);
+      }
+
+      return $this;
+   }
+
+
+   public function aprobarPermiso(string $permis){
+
+      $permiso = Permiso::where('nombre',$permis)->first();
+
+      if($permiso){
+         $this->asignarPermiso([$permiso]);
+      }
+
+     
+   }
+
 
 
    public function getHabilidades(){

@@ -63,7 +63,7 @@ import VerticalNavMenu from './components/vertical-nav-menu/VerticalNavMenu.vue'
 import useVerticalLayout from './useVerticalLayout'
 import mixinVerticalLayout from './mixinVerticalLayout'
 
-import store from '@/store'
+// import store from '@/store'
 
 export default {
   components: {

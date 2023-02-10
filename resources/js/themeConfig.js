@@ -16,7 +16,7 @@ export const $themeConfig = {
   },
   
   layout: {
-    skin: 'semi-dark', // light, dark, bordered, semi-dark
+    skin: 'light', // light, dark, bordered, semi-dark
     routerTransition: 'fade', // zoom-fade, slide-fade, fade-bottom, fade, zoom-out, none
     type: 'vertical', // vertical, horizontal
     contentWidth: 'full', // full, boxed

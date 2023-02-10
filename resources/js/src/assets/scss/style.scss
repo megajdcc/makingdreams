@@ -1,11 +1,5 @@
 @import './variables/variables';
 
-/*================================================================================
-
-NOTE:
-------
-PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
-WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
 .main-menu .navbar-header {
    height: 100%;
    width: 260px;
@@ -209,11 +203,11 @@ body {
 }
 
 .main-menu .navbar-header .modern-nav-toggle {
-    color: white;
+   //  color: white;
 }
 
 .main-menu.menu-light .navigation > li.open:not(.menu-item-closing) > a{
-   color: white;
+   // color: white;
 }
 
 .dark-layout .main-menu-content .navigation-main li a,

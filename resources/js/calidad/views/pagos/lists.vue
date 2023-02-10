@@ -106,9 +106,7 @@ export default {
       ShowImagen
    },
 
-
    setup(){
-
 
       const actions = usePagosList();
       const urlImagen = ref('')

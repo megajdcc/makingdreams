@@ -22,5 +22,9 @@ class Etapa extends Model
         return $this->belongsTo(Etapa::class,'etapa_id','id');
     }
 
+
+    public function tableros(){
+        return $this->hasMany(Tablero::class,'etapa_id','id');
+    }
     
 }

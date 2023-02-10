@@ -49,6 +49,11 @@ import pago from './modules/pagos/pago.js'
 
 import etapa from './modules/etapa.js'
 
+// Tablero
+
+import tablero from './modules/tablero.js'
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -147,7 +152,8 @@ export default new Vuex.Store({
     cuenta,
     movimiento,
     pago,
-    etapa
+    etapa,
+    tablero
     
   },
 

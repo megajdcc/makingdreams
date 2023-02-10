@@ -142,6 +142,7 @@ class AuthController extends Controller
          $user->habilidades = $user->getHabilidades();
          $user->avatar = $user->getAvatar();
          $user->link;
+         $user->cargar();
          $user->codigo_referidor = $user->link ? $user->link->link :'';
          $user->datosBancarios;
          $user->telefonos;
@@ -151,6 +152,8 @@ class AuthController extends Controller
       }catch(\Exception $e){
 
          $result = false;
+
+         // dd($e->getMessage());
       }
       
       

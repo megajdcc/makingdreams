@@ -1,24 +1,16 @@
 <template>
-  <li
-    v-if="canViewVerticalNavMenuLink(item)"
-    class="nav-item"
-    :class="{
-      'active': isActive,
-      'disabled': item.disabled
-    }"
-  >
-    <b-link
-      v-bind="linkProps"
-      class="d-flex align-items-center"
-    >
-      <feather-icon :icon="item.icon || 'CircleIcon'" />
+
+  <li v-if="canViewVerticalNavMenuLink(item)" class="nav-item" :class="{
+    'active': isActive,
+    'disabled': item.disabled
+  }">
+    <b-link v-bind="linkProps" class="d-flex align-items-center">
+     
+      <font-awesome-icon :icon="`fas ${item.icon}` || 'fas fa-circle'" v-if="item.fontAwesome == true"  />
+      <feather-icon :icon="item.icon || 'CircleIcon'" v-else />
+
       <span class="menu-title text-truncate">{{ t(item.title) }}</span>
-      <b-badge
-        v-if="item.tag"
-        pill
-        :variant="item.tagVariant || 'primary'"
-        class="mr-1 ml-auto"
-      >
+      <b-badge v-if="item.tag" pill :variant="item.tagVariant || 'primary'" class="mr-1 ml-auto">
         {{ item.tag }}
       </b-badge>
     </b-link>

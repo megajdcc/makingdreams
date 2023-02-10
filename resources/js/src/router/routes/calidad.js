@@ -700,7 +700,57 @@ export default [
    },
 
 
+   /*****************************************/
+   /*Tableros
+   /*************************************** */
 
+   {
+      path:'/tableros',
+      component:() => import('views/tableros/index.vue'),
+
+      children:[
+
+         {
+            path:'',
+            component:() => import('views/tableros/list.vue'),
+            name:'tableros',
+            meta:{
+               resource:'tableros',
+               action:'read',
+               pageTitle:'Tableros',
+
+               breadcrumb:[
+                  {text:'Home',to:"home",active:false},
+                  { text: 'Tableros', active: true },
+               ]
+            }
+         }
+      ]
+   },
+
+   /*****************************************/
+   /*Juntas
+   /*************************************** */
+
+   {
+      path:'/juntas',
+      component:() => import('views/juntas/list.vue'),
+      name:'juntas',
+      meta:{
+         resource:'juntas',
+         action:'read',
+         pageTitle:'Juntas',
+         breadcrumb:[
+            {
+               text:'Home',to:{name:'home'}, active:false,
+            },
+            {
+               text: 'Juntas', active: true,
+            }
+         ]
+      }
+   },
+   
    /*****************************************/
    /* PAGINA DE Mantenimiento
    /*************************************** */

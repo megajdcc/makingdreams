@@ -16,6 +16,23 @@ export default [
       
    },
 
+   {
+      title: 'Juntas',
+      route: 'juntas',
+      action: 'read',
+      resource: 'juntas',
+      icon:'ListIcon'
+   },
+
+   {
+      title: 'Tableros',
+      route: 'tableros',
+      action: 'read',
+      resource: 'tableros',
+      icon:'fa-people-line',
+      fontAwesome:true
+   },
+
 
    {
       title: 'Ajustes',

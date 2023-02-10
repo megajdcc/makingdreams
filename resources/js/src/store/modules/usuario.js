@@ -30,7 +30,8 @@ export default {
 				datos_bancarios: [],
 				telefonos: [],
 				backoffice: false,
-				pagos:[]
+				pagos:[],
+				tableros:[]
 
 
 			},
@@ -59,7 +60,9 @@ export default {
 				datos_bancarios:[],
 				telefonos:[],
 				backoffice: false,
-				pagos: []
+				pagos: [],
+				tableros: []
+
 
 
 
@@ -118,7 +121,9 @@ export default {
 				datos_bancarios: [],
 				telefonos: [],
 				backoffice: false,
-				pagos: []
+				pagos: [],
+				tableros: []
+
 
 			}
 		},

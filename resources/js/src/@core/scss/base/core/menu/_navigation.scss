@@ -10,8 +10,9 @@
   height: 100%;
   overflow: hidden;
   &.menu-light {
-    @include menu-theme($body-color, $primary);
 
+    @include menu-theme($body-color, $light);
+    // @include menu-theme($text-color,$primary);
     &.navigation{
       background: #a03bb3;
     }

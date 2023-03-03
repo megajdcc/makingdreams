@@ -17,10 +17,10 @@ export default [
       },
 
       {
-        title:'Movimientos de Cuentas',
+        title:'Pagos - BackOffice',
         icon:'BookOpenIcon',
-        route:'movimientos',
-        resource:'movimientos',
+        route:'pagos.backoffice',
+        resource:'pagos.backoffice',
         action:'read'
       }
       

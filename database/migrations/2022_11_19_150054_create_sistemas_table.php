@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('direccion_bitcoin')->nullable();
             $table->json('paypal')->nullable();
             $table->json('wompi')->nullable();
-            $table->json('mercado_pado')->nullable();
+            $table->json('mercado_pago')->nullable();
             
             $table->timestamps();
         });

@@ -10,7 +10,7 @@ export default function useEtapasList() {
     { key: 'nombre', sortable: true, label: "Nombre" },
     { key: 'monto', sortable: true, label: "Monto de la etapa" },
     { key: 'remuneracion', sortable: true, label: "Remuneración" },
-   
+    { key: 'etapa_sig', sortable: false, label: "Etapa Siguiente",sortBy:'id',sortKey:'id' },
     { key: 'actions', sortable: false, variant: 'primary', },
   ]
 

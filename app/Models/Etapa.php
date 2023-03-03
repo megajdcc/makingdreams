@@ -23,8 +23,8 @@ class Etapa extends Model
     }
 
 
-    public function tablero(){
-        return $this->hasOne(Tablero::class,'etapa_id','id');
+    public function tableros(){
+        return $this->hasMany(Tablero::class,'etapa_id','id');
     }
     
 }

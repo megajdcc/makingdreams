@@ -22,7 +22,7 @@ class EtapaController extends Controller
             ['descripcion', 'like', "%{$datos['q']}%", 'or'],
             ['remuneracion', 'like', "%{$datos['q']}%", 'or'],
         ])
-        ->with(['etapa','tablero'])
+        ->with(['etapa','tableros'])
         ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']?: 10000);
         
@@ -38,7 +38,7 @@ class EtapaController extends Controller
 
     public function fetch(Etapa $etapa){
 
-        $etapa->load(['etapa','tablero']);
+        $etapa->load(['etapa','tableros']);
 
         return response()->json($etapa);
 
@@ -80,25 +80,23 @@ class EtapaController extends Controller
     public function store(Request $request)
     {
         
+        $datos = $this->validar($request);
+
         try{
             DB::beginTransaction();
-            $etapa = Etapa::create($this->validar($request));
-
-            $tablero = Tablero::create([
-                'etapa_id' => $etapa->id
-            ]);
-            
-           
-            
+            $etapa = Etapa::create($datos);
 
             DB::commit();
             $result = true;
 
             $etapa->refresh();
-            $etapa->load(['etapa', 'tablero']);
+            $etapa->load(['etapa', 'tableros']);
+
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
+
+            dd($e->getMessage());
         }
 
         return response()->json([
@@ -119,16 +117,15 @@ class EtapaController extends Controller
      */
     public function update(Request $request, Etapa $etapa)
     {
+        $datos = $this->validar($request,$etapa);
 
         try {
             DB::beginTransaction();
-            $etapa->update($this->validar($request,$etapa));
-            
-
+            $etapa->update($datos);
             DB::commit();
             $result = true;
             $etapa->refresh();
-            $etapa->load(['etapa', 'tablero']);
+            $etapa->load(['etapa', 'tableros']);
         } catch (\Exception $e) {
             DB::rollBack();
             $result = false;

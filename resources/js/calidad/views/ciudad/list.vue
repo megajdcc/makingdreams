@@ -1,107 +1,66 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
-
-      <!-- Table Container Card -->
-      <b-card no-body class="mb-0">
-
-         <div class="m-2">
-            <!-- Table Top -->
-            <b-row>
-               <!-- Per Page -->
-               <b-col cols="12" md="6" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-                  <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-               </b-col>
-
-               <b-col md="6">
-                  <div class="d-flex align-items-center justify-content-end">
-
-                     <b-input-group size="sm">
-
-                        <b-form-input v-model="searchQuery" type="search" placeholder="..." />
-
-                        <template #append>
-                           <b-button variant="dark" :to="{ name: 'create.ciudad' }">
-                              <feather-icon size="18" icon="PlusSquareIcon" />
-                              Añadir
-                           </b-button>
-                        </template>
-                     </b-input-group>
+   <listado :actions="actions" hideFooter>
+      <template #btn-action>
+          <b-button variant="dark" :to="{ name: 'create.ciudad' }">
+            <feather-icon size="18" icon="PlusSquareIcon" />
+            Añadir
+         </b-button>
+      </template>
+      <template #contenido="{fetchData,tableColumns,sortBy,isSortDirDesc,eliminar}">
+         <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
+            empty-text="No se encontró ningúna Ciudad" :sort-desc="isSortDirDesc" sticky-header="700px"
+            :no-border-collapse="false" small :busy="loading" show-empty>
 
 
+               <template #empty>
+                  <span class="text-nowrap text-center d-block">
+                     No se encontró níngúna Ciudad...
+                  </span>
+               </template>
+
+               <template #table-busy>
+                  <div class="text-center my-2">
+                     <b-spinner class="align-middle" variant="primary"></b-spinner>
+                     <strong>Cargando...</strong>
                   </div>
-               </b-col>
+               </template>
 
-            </b-row>
+               <template #cell(pais)="{ item }">
+                  <span class="text-nowrap">
+                     {{ item.estado.pais.pais }}
+                  </span>
 
-         </div>
+               </template>
 
-      <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by.sync="sortBy"
-         empty-text="No se encontró ningúna Ciudad" :sort-desc.sync="isSortDirDesc" sticky-header="700px"
-         :no-border-collapse="false" small :busy="loading" show-empty>
-
-
-            <template #empty>
-               <span class="text-nowrap text-center d-block">
-                  No se encontró níngúna Ciudad...
-               </span>
-            </template>
-
-            <template #table-busy>
-               <div class="text-center my-2">
-                  <b-spinner class="align-middle" variant="primary"></b-spinner>
-                  <strong>Cargando...</strong>
-               </div>
-            </template>
-
-            <template #cell(pais)="{item}">
-               <span class="text-nowrap">
-                  {{ item.estado.pais.pais }}
-               </span>
-
-            </template>
-
-            <template #cell(estado)="{item}">
-               <span class="text-nowrap">
-                  {{ item.estado.estado }}
-               </span>
+               <template #cell(estado)="{ item }">
+                  <span class="text-nowrap">
+                     {{ item.estado.estado }}
+                  </span>
             
-            </template>
+               </template>
 
-            <!-- Column: Actions -->
-            <template #cell(actions)="{ item }">
+               <!-- Column: Actions -->
+               <template #cell(actions)="{ item }">
 
-               <b-button-group size="sm">
+                  <b-button-group size="sm">
 
-                  <b-button :to="{ name: 'edit.ciudad', params: { id: item.id } }" variant="primary" title="Editar Ciudad" v-if="$can('update','estado')">
-                     <feather-icon icon="EditIcon" />
-                  </b-button>
+                     <b-button :to="{ name: 'edit.ciudad', params: { id: item.id } }" variant="primary" title="Editar Ciudad" v-if="$can('update', 'estado')">
+                        <feather-icon icon="EditIcon" />
+                     </b-button>
 
-                  <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Ciudad" v-if="$can('delete','ciudad')">
-                     <feather-icon icon="TrashIcon" />
-                  </b-button>
+                     <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Ciudad" v-if="$can('delete', 'ciudad')">
+                        <feather-icon icon="TrashIcon" />
+                     </b-button>
 
-               </b-button-group>
+                  </b-button-group>
 
-            </template>
+               </template>
 
-         </b-table>
+            </b-table>
+      </template>
+   </listado>
 
-         <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total" />
-
-
-         <b-container class="mb-1">
-            <b-row>
-               <b-col class="px-1">
-                  <b-button @click="regresar" size="sm">Regresar</b-button>
-               </b-col>
-            </b-row>
-         </b-container>
-
-
-      </b-card>
-   </b-container>
 </template>
-
 
 <script>
 
@@ -120,7 +79,6 @@ import {
 
 } from 'bootstrap-vue'
 
-import { regresar } from '@core/utils/utils'
 import { computed, onMounted } from 'vue'
 
 import store from '@/store'
@@ -135,8 +93,7 @@ export default {
       BTable,
       BButtonGroup,
       BButton,
-      PerPage: () => import('components/PerPage'),
-      PaginateTable: () => import('components/PaginateTable'),
+      Listado:() =>import('components/Listado.vue'),
       BInputGroup,
       BFormInput,
       BSpinner
@@ -145,48 +102,18 @@ export default {
 
    setup(props) {
 
-
-      const {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         tableColumns,
-         eliminar
-      } = useCiudadList();
-
-
-
+      const actions = useCiudadList();
       onMounted(() => {
          setTimeout(() => {
-            refetchData()
-         }, 1000)
+            actions.refetchData()
+         }, 400)
       })
 
 
       return {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         tableColumns,
-         eliminar,
-         regresar,
-         loading: computed(() => store.state.loading)
+         refTable:actions.refTable,
+         loading: computed(() => store.state.loading),
+         actions
       }
    }
 }

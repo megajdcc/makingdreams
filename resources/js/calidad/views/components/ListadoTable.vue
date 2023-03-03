@@ -117,7 +117,7 @@ export default {
   props: {
     actions: Object | Function,
     emptyTable: {
-      type:string,
+      type:String,
       default:'Sin data'
     }
   },

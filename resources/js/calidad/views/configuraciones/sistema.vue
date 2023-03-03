@@ -127,6 +127,188 @@
                      </b-col>
                   </b-row>
 
+                  <el-divider content-position="left">Datos de pagos</el-divider>
+
+                  <b-row>
+                     <b-col cols="12" md="6">
+
+                        <b-form-group label="Dirección para recibir bitcoin">
+
+                           <validation-provider name="direccion_bitcoin" #default="{errors,valid}">
+                              <b-form-input v-model="formulario.direccion_bitcoin" :state="valid"/>
+
+                              <b-form-invalid-feedback :state="valid">
+                                 {{ errors[0]  }}
+                              </b-form-invalid-feedback>
+                           </validation-provider>
+                        </b-form-group>
+
+                        <el-divider>Datos Paypal</el-divider>
+                        <template v-if="formulario.paypal">
+                             <b-form-group label="Cliente Id">
+
+                                 <validation-provider name="paypal.cliente_id" #default="{ errors, valid }">
+                                    <b-form-input v-model="formulario.paypal.cliente_id" :state="valid"/>
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                              </b-form-group>
+
+                              <b-form-group label="Secreto">
+
+                                 <validation-provider name="paypal.secret" #default="{ errors, valid }">
+                                    <b-form-input v-model="formulario.paypal.secret" :state="valid"/>
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                              </b-form-group>
+
+                              <b-form-group label="¿ En producción ?">
+
+                                       <validation-provider name="paypal.production" #default="{ errors, valid }">
+                                          <b-form-radio-group v-model="formulario.paypal.production" 
+                                          :options="[{ text: 'Sí', value: true }, { text: 'No', value: false }]"
+                                          ></b-form-radio-group>
+
+                                          <b-form-invalid-feedback :state="valid">
+                                             {{ errors[0] }}
+                                          </b-form-invalid-feedback>
+                                       </validation-provider>
+                              </b-form-group>
+                        </template>
+
+                        <el-divider>Datos Mercado Pago</el-divider>
+                           <template v-if="formulario.mercado_pago">
+                                <b-form-group label="Llave Publica">
+
+                                    <validation-provider name="mercado_pago.public_key" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.mercado_pago.public_key" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                                 </b-form-group>
+
+                                 <b-form-group label="Token">
+
+                                    <validation-provider name="mercado_pago.token" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.mercado_pago.token" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                                 </b-form-group>
+
+                                 <b-form-group label="Cliente Id">
+
+                                    <validation-provider name="mercado_pago.cliente_id" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.mercado_pago.cliente_id" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                                 </b-form-group>
+
+                                 <b-form-group label="Cliente Secret">
+
+                                    <validation-provider name="mercado_pago.cliente_secret" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.mercado_pago.cliente_secret" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                                 </b-form-group>
+
+                                 <b-form-group label="¿ En producción ?">
+
+                                          <validation-provider name="mercado_pago.is_production" #default="{ errors, valid }">
+                                             <b-form-radio-group v-model="formulario.mercado_pago.is_production" 
+                                             :options="[{ text: 'Sí', value: true }, { text: 'No', value: false }]"
+                                             ></b-form-radio-group>
+
+                                             <b-form-invalid-feedback :state="valid">
+                                                {{ errors[0] }}
+                                             </b-form-invalid-feedback>
+                                          </validation-provider>
+                                 </b-form-group>
+                           </template>
+                         
+                         
+                     </b-col>
+
+                      <b-col cols="12" md="6" >
+                           
+                        <el-divider>Datos Wompi</el-divider>
+
+                           <template v-if="formulario.wompi">
+                              <b-form-group label="Sandbox - llave publica">
+
+                                 <validation-provider name="wompi.sandbox.llave_publica" #default="{ errors, valid }">
+                                    <b-form-input v-model="formulario.wompi.sandbox.llave_publica" :state="valid"/>
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                              </b-form-group>
+
+                              <b-form-group label="Sandbox - llave privada">
+
+                                 <validation-provider name="wompi.sandbox.llave_privada" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.wompi.sandbox.llave_privada" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                              </b-form-group>
+
+                               <b-form-group label="Production - llave publica">
+
+                                    <validation-provider name="production.llave_publica" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.wompi.production.llave_publica" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                              </b-form-group>
+
+                              <b-form-group label="Production - llave privada">
+
+                                 <validation-provider name="wompi.production.llave_privada" #default="{ errors, valid }">
+                                       <b-form-input v-model="formulario.wompi.production.llave_privada" :state="valid"/>
+
+                                       <b-form-invalid-feedback :state="valid">
+                                          {{ errors[0] }}
+                                       </b-form-invalid-feedback>
+                                    </validation-provider>
+                              </b-form-group>
+
+                              <b-form-group label="¿ En producción ?">
+
+                                 <validation-provider name="wompi.is_production" #default="{ errors, valid }">
+                                    <b-form-radio-group v-model="formulario.wompi.is_production" 
+                                    :options="[{ text: 'Sí', value: true }, { text: 'No', value: false }]"
+                                    ></b-form-radio-group>
+
+                                    <b-form-invalid-feedback :state="valid">
+                                       {{ errors[0] }}
+                                    </b-form-invalid-feedback>
+                                 </validation-provider>
+                              </b-form-group>
+                           </template>
+                           
+                        </b-col>
+                  </b-row>
                   <b-row>
                      <b-button-group>
 
@@ -163,7 +345,8 @@ import {
    BForm,
    BFormInvalidFeedback,
    BFormFile,
-   VBTooltip
+   VBTooltip,
+   BFormRadioGroup,
 
 } from 'bootstrap-vue'
 
@@ -187,6 +370,7 @@ export default {
       BForm,
       Editor,
       BFormFile,
+      BFormRadioGroup,
       currencyInput:() => import('components/CurrencyInput.vue')
    },
 
@@ -206,8 +390,9 @@ export default {
       const {sistema:formulario}  = toRefs(store.state.sistema)
 
       const cargarForm = () => {
-         
+            
          if (!formulario.value.id) {
+
             store.dispatch('sistema/fetch').then(() => {
                
                urlLogoClaro.value = `/storage/logotipos/${formulario.value.logotipo_claro}`
@@ -215,6 +400,42 @@ export default {
 
                formulario.value.logotipo_claro = null
                formulario.value.logotipo_oscuro = null
+
+               if (formulario.value.paypal == null) {
+
+                  formulario.value.paypal = {
+                     cliente_id: null,
+                     secret: null,
+                     production: false,
+                  }
+               }
+
+
+               if (formulario.value.wompi == null) {
+
+                  formulario.value.wompi  = {
+                     sandbox: {
+                        llave_publica: null,
+                        llave_privada: null,
+                     },
+                     production: {
+                        llave_publica: null,
+                        llave_privada: null,
+                     },
+                     is_production: false,
+                  }
+               }
+
+                if (formulario.value.mercado_pago == null) {
+
+                  formulario.value.mercado_pago = {
+                     public_key: null,
+                     token: null,
+                     cliente_id: null,
+                     cliente_secret: null,
+                     is_production: false,
+                  }
+               }
             })
          }else{
             urlLogoClaro.value = `/storage/logotipos/${formulario.value.logotipo_claro}`
@@ -223,10 +444,47 @@ export default {
             formulario.value.logotipo_claro = null
             formulario.value.logotipo_oscuro = null
 
+            if (formulario.value.paypal == null) {
+
+               formulario.value.paypal = {
+                  cliente_id: null,
+                  secret: null,
+                  production: false,
+               }
+            }
+
+             if (formulario.value.wompi == null) {
+
+               formulario.value.wompi = {
+                  sandbox: {
+                     llave_publica: null,
+                     llave_privada: null,
+                  },
+                  production: {
+                     llave_publica: null,
+                     llave_privada: null,
+                  },
+                  is_production: false,
+               }
+            }
+
+            if (formulario.value.mercado_pago == null) {
+
+               formulario.value.mercado_pago = {
+                  public_key: null,
+                  token: null,
+                  cliente_id: null,
+                  cliente_secret: null,
+                  is_production: false,
+               }
+            }
+
          }
       }
 
-      onMounted(() => cargarForm())
+
+      cargarForm();
+      // onMounted(() => cargarForm())
 
       const guardar = () => {
          
@@ -269,6 +527,16 @@ export default {
                break;
 
          }
+
+         store.dispatch('sistema/updateLogo',{modo,archivo:file}).then(({result}) => {
+            if(result){
+               toast.success('Se ha cargado con éxito el logo',{position:'bottom-right'})
+               cargarForm()
+            }else{
+               toast.success('No se pudo cargar el logo', { position: 'bottom-right' })
+
+            }
+         })
       
       }
 

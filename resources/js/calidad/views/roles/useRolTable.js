@@ -47,7 +47,7 @@ export default function useRolTable(){
 
    }
 
-   const eliminarRol = (id) => {
+   const eliminar = (id) => {
 
       store.dispatch('rol/eliminarRol', id).then(({ result }) => {
 
@@ -79,7 +79,7 @@ export default function useRolTable(){
       refetchData,
       fetchData,
       tableColumns,
-      eliminarRol
+      eliminar
    }
 
 

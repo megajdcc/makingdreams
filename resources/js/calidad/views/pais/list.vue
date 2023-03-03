@@ -1,91 +1,54 @@
 <template>
-   <b-container fluid class="px-0 mx-0">
+   <listado :actions="actions" hideFooter>
 
-      <!-- Table Container Card -->
-      <b-card no-body class="mb-0">
+      <template #btn-action>
+         <b-button variant="dark" :to="{ name: 'create.pais' }">
+            <feather-icon size="18" icon="PlusSquareIcon" />
+            Añadir
+         </b-button>
+      </template>
 
-         <div class="m-2">
-            <!-- Table Top -->
-            <b-row>
-               <!-- Per Page -->
-               <b-col cols="12" md="6" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-                  <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-               </b-col>
-
-               <b-col md="6">
-                  <div class="d-flex align-items-center justify-content-end">
-
-                     <b-input-group size="sm">
-
-                        <b-form-input v-model="searchQuery" type="search" placeholder="..." />
-
-                        <template #append>
-                           <b-button variant="dark" :to="{ name: 'create.pais' }">
-                              <feather-icon size="18" icon="PlusSquareIcon" />
-                              Añadir
-                           </b-button>
-                        </template>
-                     </b-input-group>
+      <template #contenido="{fetchData,tableColumns,sortBy,isSortDirDesc,eliminar}">
+          <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by="sortBy"
+            empty-text="No se encontró ningún Pais" :sort-desc="isSortDirDesc" sticky-header="700px"
+            :no-border-collapse="false" small :busy="loading" show-empty>
 
 
+               <template #empty>
+                  <span class="text-nowrap text-center d-block">
+                     No se encontró níngún Pais...
+                  </span>
+               </template>
+
+               <template #table-busy>
+                  <div class="text-center my-2">
+                     <b-spinner class="align-middle" variant="primary"></b-spinner>
+                     <strong>Cargando...</strong>
                   </div>
-               </b-col>
+               </template>
 
-            </b-row>
+               <!-- Column: Actions -->
+               <template #cell(actions)="{ item }">
 
-         </div>
+                  <b-button-group size="sm">
 
-      <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id" :sort-by.sync="sortBy"
-         empty-text="No se encontró ningún Pais" :sort-desc.sync="isSortDirDesc" sticky-header="700px"
-         :no-border-collapse="false" small :busy="loading" show-empty>
+                     <b-button :to="{ name: 'edit.pais', params: { id: item.id } }" variant="primary" title="Editar Pais" v-if="$can('update', 'pais')">
+                        <feather-icon icon="EditIcon" />
+                     </b-button>
 
+                     <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Pais" v-if="$can('delete', 'pais')">
+                        <feather-icon icon="TrashIcon" />
+                     </b-button>
 
-            <template #empty>
-               <span class="text-nowrap text-center d-block">
-                  No se encontró níngún Pais...
-               </span>
-            </template>
+                  </b-button-group>
 
-            <template #table-busy>
-               <div class="text-center my-2">
-                  <b-spinner class="align-middle" variant="primary"></b-spinner>
-                  <strong>Cargando...</strong>
-               </div>
-            </template>
+               </template>
 
-            <!-- Column: Actions -->
-            <template #cell(actions)="{ item }">
+            </b-table>
+      </template>
 
-               <b-button-group size="sm">
-
-                  <b-button :to="{ name: 'edit.pais', params: { id: item.id } }" variant="primary" title="Editar Pais" v-if="$can('update','pais')">
-                     <feather-icon icon="EditIcon" />
-                  </b-button>
-
-                  <b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Pais" v-if="$can('delete','pais')">
-                     <feather-icon icon="TrashIcon" />
-                  </b-button>
-
-               </b-button-group>
-
-            </template>
-
-         </b-table>
-
-         <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total" />
-
-
-         <b-container class="mb-1">
-            <b-row>
-               <b-col class="px-1">
-                  <b-button @click="regresar" size="sm">Regresar</b-button>
-               </b-col>
-            </b-row>
-         </b-container>
-
-
-      </b-card>
-   </b-container>
+   </listado>
+ 
 </template>
 
 
@@ -125,54 +88,28 @@ export default {
       PaginateTable: () => import('components/PaginateTable'),
       BInputGroup,
       BFormInput,
-      BSpinner
+      BSpinner,
+      Listado:() => import('components/Listado.vue')
 
    },
 
    setup(props) {
 
-
-      const {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         tableColumns,
-         eliminar
-      } = usePaisList();
+      const actions = usePaisList();
 
 
 
       onMounted(() => {
          setTimeout(() => {
-            refetchData()
+            actions.refetchData()
          }, 1000)
       })
 
 
       return {
-         perPageOptions,
-         currentPage,
-         perPage,
-         searchQuery,
-         sortBy,
-         isSortDirDesc,
-         refTable,
-         total,
-         dataMeta,
-         refetchData,
-         fetchData,
-         tableColumns,
-         eliminar,
-         regresar,
-         loading: computed(() => store.state.loading)
+         refTable:actions.refTable,
+         loading: computed(() => store.state.loading),
+         actions
       }
    }
 }

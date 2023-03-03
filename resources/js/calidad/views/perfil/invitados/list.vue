@@ -89,7 +89,7 @@ export default {
       BLink,
       BTable,
       PerPage:()       => import('components/PerPage'),
-      PaginateTable:() => import('components/PaginateTable')
+      PaginateTable:() => import('components/PaginateTable'),
    },
 
    setup() {

@@ -45,7 +45,7 @@ export default function usePermiso() {
 
    }
 
-   const eliminarPermiso = (id) => {
+   const eliminar = (id) => {
 
       store.dispatch('permiso/eliminarPermiso', id).then(({ result }) => {
 
@@ -77,7 +77,7 @@ export default function usePermiso() {
       refetchData,
       fetchData,
       tableColumns,
-      eliminarPermiso
+      eliminar
    }
 
 

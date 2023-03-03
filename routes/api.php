@@ -167,7 +167,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /* Sistema
     /**************************/
     Route::resource('sistemas',SistemaController::class);
-
+    Route::put('sistemas/{sistema}/update/logo/modo/{modo}',[SistemaController::class,'updateLogo']);
 
 
     /*****************************/

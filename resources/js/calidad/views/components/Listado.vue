@@ -19,7 +19,7 @@
           </b-col>
           <b-col :md="8">
             <b-input-group size="lg">
-              <b-form-input v-model="searchQuery" type="search" placeholder="Buscar Beneficiario, Tablero ..." />
+              <b-form-input v-model="searchQuery" type="search" :placeholder="placeholderSearch" />
               <b-input-group-append>
                 <slot name="btn-action"></slot>
               </b-input-group-append>
@@ -37,14 +37,15 @@
          </b-spinner>
       </section> -->
 
-    <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
+    <b-card v-loading="loading" class="w-100 mt-1" style="min-height:100px"> 
       <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
         :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable" :refetchData="refetchData">
       </slot>
-    </section>
+    </b-card>
+    
 
     <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"
-      class="mt-1" />
+      class="" />
 
     <b-card class="mt-1" v-if="!hideFooter">
 
@@ -131,7 +132,11 @@ export default {
     isTable: Boolean,
     hideFooter: Boolean,
     hideHeader: Boolean,
-    hidePerPage:Boolean
+    hidePerPage:Boolean,
+    placeholderSearch:{
+      type:String,
+      default:'...'
+    }
   },
 
 

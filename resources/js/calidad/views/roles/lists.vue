@@ -1,91 +1,55 @@
 <template>
-	<b-container fluid class="px-0 mx-0">
 
-		<!-- Table Container Card -->
-		<b-card no-body class="mb-0">
+	<listado :actions="actions" placeholderSearch="Buscar Roles ..." hideFooter>
+		
+		<template #btn-action>
+			<b-button variant="dark" :to="{ name: 'create.role' }">
+				<feather-icon size="18" icon="PlusSquareIcon" />
+				Añadir
+			</b-button>
+		</template>
 
-			<div class="m-2">
-				<!-- Table Top -->
-				<b-row>
-					<!-- Per Page -->
-					<b-col cols="12" md="6" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-						<per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-					</b-col>
+		<template #contenido="{eliminar,fetchData,tableColumns,isSortDirDesc,sortBy}">
 
-					<b-col md="6">
-						<div class="d-flex align-items-center justify-content-end">
-
-							<b-input-group size="sm">
-
-								<b-form-input v-model="searchQuery" type="search" placeholder="..." />
-
-								<template #append>
-									<b-button variant="dark" :to="{name:'create.role'}">
-										<feather-icon size="18" icon="PlusSquareIcon" />
-										Añadir
-									</b-button>
-								</template>
-							</b-input-group>
+				<b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
+					:sort-by="sortBy" empty-text="No se encontró ningún Rol" :sort-desc="isSortDirDesc"
+					sticky-header="700px" :no-border-collapse="false" borderless outlined small :busy="loading" >
 
 
-						</div>
-					</b-col>
-
-				</b-row>
-
-			</div>
-
-			<b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
-				:sort-by.sync="sortBy" empty-text="No se encontró ningún Rol" :sort-desc.sync="isSortDirDesc"
-				sticky-header="700px" :no-border-collapse="false" borderless outlined small :busy="loading" >
-
-
-				<template #empty>
-					<span class="text-nowrap text-center d-block">
-						No se encontró níngún usuario...
-					</span>
-				</template>
+					<template #empty>
+						<span class="text-nowrap text-center d-block">
+							No se encontró níngún usuario...
+						</span>
+					</template>
 				
-				<template #table-busy>
-					<div class="text-center my-2">
-						<b-spinner class="align-middle" variant="primary"></b-spinner>
-						<strong>Cargando...</strong>
-					</div>
-				</template>
+					<template #table-busy>
+						<div class="text-center my-2">
+							<b-spinner class="align-middle" variant="primary"></b-spinner>
+							<strong>Cargando...</strong>
+						</div>
+					</template>
 
-				<!-- Column: Actions -->
-				<template #cell(actions)="{item}">
+					<!-- Column: Actions -->
+					<template #cell(actions)="{ item }">
 
-					<b-button-group size="sm">
+						<b-button-group size="sm">
 
-						<b-button :to="{name:'edit.role',params:{id:item.id}}" variant="primary" title="Editar Rol">
-							<feather-icon icon="EditIcon" />
-						</b-button>
+							<b-button :to="{ name: 'edit.role', params: { id: item.id } }" variant="primary" title="Editar Rol">
+								<feather-icon icon="EditIcon" />
+							</b-button>
 
-						<b-button @click="eliminarRol(item.id)" variant="danger" title="Eliminar Rol">
-							<feather-icon icon="TrashIcon" />
-						</b-button>
+							<b-button @click="eliminar(item.id)" variant="danger" title="Eliminar Rol">
+								<feather-icon icon="TrashIcon" />
+							</b-button>
 
-					</b-button-group>
+						</b-button-group>
 
-				</template>
+					</template>
 
-			</b-table>
+				</b-table>
+		</template>
+	</listado>
 
-			<paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total" />
-
-
-			<b-container class="mb-1">
-				<b-row>
-					<b-col class="px-1">
-						<b-button @click="regresar" size="sm">Regresar</b-button>
-					</b-col>
-				</b-row>
-			</b-container>
-
-
-		</b-card>
-	</b-container>
 </template>
 
 
@@ -125,54 +89,28 @@ import store from '@/store'
 			PaginateTable:() => import('components/PaginateTable'),
 			BInputGroup,
 			BFormInput,
-			BSpinner
+			BSpinner,
+			Listado:() => import('components/Listado.vue')
 
 		},
 
 		setup(props){
 
 
-			const {
-				perPageOptions,
-				currentPage,
-				perPage,
-				searchQuery,
-				sortBy,
-				isSortDirDesc,
-				refTable,
-				total,
-				dataMeta,
-				refetchData,
-				fetchData,
-				tableColumns,
-				eliminarRol
-			} = useRolTable();
-
-
+			const actions = useRolTable();
 			
 			onMounted(() => {
 				setTimeout(() => {
-					refetchData()
-				},1000)
+					actions.refetchData()
+				},400)
 			})
 
 
 			return {
-				perPageOptions,
-				currentPage,
-				perPage,
-				searchQuery,
-				sortBy,
-				isSortDirDesc,
-				refTable,
-				total,
-				dataMeta,
-				refetchData,
-				fetchData,
-				tableColumns,
-				eliminarRol,
+				refTable:actions.refTable,
 				regresar,
-				loading:computed(() =>  store.state.loading)
+				loading:computed(() =>  store.state.loading),
+				actions
 			}
 		}
 	}

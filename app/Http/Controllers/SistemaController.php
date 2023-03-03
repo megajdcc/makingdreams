@@ -39,50 +39,18 @@ class SistemaController extends Controller
             'nombre' => 'required',
             'terminos' => 'nullable',
             'monto_inicial' => 'required',
-            'logotipo_claro' => 'required_without:id',
-            'logotipo_oscuro' => 'required_without:id',
+            'direccion_bitcoin' => 'nullable',
+            'paypal' => 'nullable',
+            'wompi' => 'nullable',
+            'mercado_pago' => 'nullable',
         ]);
 
 
         try{
             DB::beginTransaction();
-
-            $logotipo_claro_name = null;
-            $logotipo_oscuro_name = null;
-
-            if($datos['logotipo_claro']){
-
-                if($sistema->logotipo_claro) {
-                    Storage::disk('logotipos')->delete($sistema->logotipo_claro);
-                }
-
-                $logotipo_claro = $request->file('logotipo_claro');
-
-                $logotipo_claro_name = \sha1($logotipo_claro->getClientOriginalName()) . '.' . $logotipo_claro->getClientOriginalExtension();
-
-                Storage::disk('logotipos')->put($logotipo_claro_name, File::get($logotipo_claro));
-
-
-            }
-
-            if($datos['logotipo_oscuro']){
-                if($sistema->logotipo_oscuro) {
-                    Storage::disk('logotipos')->delete($sistema->logotipo_oscuro);
-                }
-
-                $logotipo_oscuro = $request->file('logotipo_oscuro');
-
-                $logotipo_oscuro_name = \sha1($logotipo_oscuro->getClientOriginalName()) . '.' . $logotipo_oscuro->getClientOriginalExtension();
-
-                Storage::disk('logotipos')->put($logotipo_oscuro_name, File::get($logotipo_oscuro));
-
-            }
           
 
-            $sistema->update([...$datos,...[
-                'logotipo_claro' => $logotipo_claro_name ?:  $sistema->logotipo_claro,
-                'logotipo_oscuro' => $logotipo_oscuro_name ?: $sistema->logotipo_oscuro
-            ]]);
+            $sistema->update($datos);
             
             DB::commit();
 
@@ -97,6 +65,50 @@ class SistemaController extends Controller
 
 
         return response()->json(['result' => $result,'sistema' => $sistema]);
+
+    }
+
+    public function updateLogo(Request $request, Sistema $sistema, String $modo){
+
+        $archivo = $request->file('archivo');
+
+        $logotipo_claro_name = null;
+        $logotipo_oscuro_name = null;
+
+        if($archivo && $modo == 'claro'){
+
+            if($sistema->logotipo_claro) {
+                Storage::disk('logotipos')->delete($sistema->logotipo_claro);
+            }
+
+
+            $logotipo_claro_name = \sha1($archivo->getClientOriginalName()) . '.' . $archivo->getClientOriginalExtension();
+
+            Storage::disk('logotipos')->put($logotipo_claro_name, File::get($archivo));
+
+
+        }
+
+        if($archivo && $modo == 'oscuro'){
+            if($sistema->logotipo_oscuro) {
+                Storage::disk('logotipos')->delete($sistema->logotipo_oscuro);
+            }
+            $logotipo_oscuro_name = \sha1($archivo->getClientOriginalName()) . '.' . $archivo->getClientOriginalExtension();
+
+            Storage::disk('logotipos')->put($logotipo_oscuro_name, File::get($archivo));
+
+        }
+
+        $result = $sistema->update([
+            'logotipo_oscuro' => isset($logotipo_oscuro_name) ? $logotipo_oscuro_name : $sistema->logotipo_oscuro,
+            'logotipo_clalro' =>  isset($logotipo_claro_name) ? $logotipo_claro_name : $sistema->logotipo_claro,
+        ]);
+
+        $sistema->refresh();
+
+
+        return response()->json(compact('result','sistema'));
+
 
     }
 

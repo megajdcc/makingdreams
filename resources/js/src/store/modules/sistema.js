@@ -13,9 +13,31 @@ export default{
          logotipo_claro:null,
 
          direccion_bitcoin:null,
-         paypal:null,
-         wompi:null,
-         mercado_pago:null
+
+         paypal:{
+            cliente_id:null,
+            secret:null,
+            production:false,
+         },
+         wompi:{
+            sandbox:{
+               llave_publica:null,
+               llave_privada:null,
+            },
+            production:{
+               llave_publica:null,
+               llave_privada:null,
+            },
+            is_production:false,
+         },
+
+         mercado_pago:{
+            public_key:null,
+            token:null,
+            cliente_id:null,
+            cliente_secret:null,
+            is_production:false,
+         },
       }
    }),
 
@@ -58,16 +80,9 @@ export default{
 
       guardar({state,commit},datos){
 
-         const formData = new FormData()
-
-         Object.keys(datos).forEach((val) => {
-               formData.append(val, datos[val])
-         })
-
-         formData.append('_method','put')
 
          return new Promise((resolve, reject) => {
-            axios.post(`/api/sistemas/${state.sistema.id}`,formData).then(({data}) => {
+            axios.put(`/api/sistemas/${state.sistema.id}`,datos).then(({data}) => {
 
                if(data.result){
                   commit('update',data.sistema)
@@ -79,6 +94,31 @@ export default{
 
          })
       },
+
+      updateLogo({state,commit},datos){
+         
+         let formData = new FormData();
+
+         Object.keys(datos).forEach(val => {
+            formData.append(val,datos[val])
+         })
+
+         formData.append('_method','PUT')
+
+         return new Promise((resolve, reject) => {
+            axios.post(`/api/sistemas/${state.sistema.id}/update/logo/modo/${datos.modo}`,formData,{
+               headers:{
+                  ContentType:'multipart/form-data'
+               }
+            }).then(({data}) => {
+               if(data.result){
+                  commit('update',data.sistema)
+               }
+
+               resolve(data)
+            }).catch(e => reject(e))
+         })
+      }
 
   
 

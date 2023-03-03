@@ -228,6 +228,8 @@ let app = new Vue({
   store,
   i18n,
   render: h => h(App),
+  provide:() =>  ({swal : Vue.swal})
+
 }).$mount('#app')
 
 // app.provide();

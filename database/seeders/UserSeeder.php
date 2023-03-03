@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\{User};
+use App\Models\{User,Contacto};
 use App\Models\Usuario\{Rol,Permiso};
 use Illuminate\Support\Facades\Hash;
 use App\Models\Pais;
@@ -18,8 +18,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-
-
             $permisos = [
                 'all',
                 'home',
@@ -55,15 +53,22 @@ class UserSeeder extends Seeder
             
 
     		$usuario = User::create([
-				'nombre'   => 'Jhonatan Deivyth',
-				'apellido' => 'Crespo Colmenarez',
-                'username' => 'megajdcc',
-				'email' => 'megajdcc2009@gmail.com',
-				'password' => Hash::make('20464273jd'),
+				'nombre'                  => 'Jhonatan Deivyth',
+				'apellido'                => 'Crespo Colmenarez',
+                'username'    => 'megajdcc',
+				'email'                   => 'megajdcc2009@gmail.com',
+				'password'                => Hash::make('20464273jd'),
                 'is_password' => true,
-                'pais_id' => Pais::where('pais','Venezuela')->first()->id,
-                'rol_id' => Rol::where('nombre','Desarrollador')->first()->id
+                'pais_id'     => Pais::where('pais','Venezuela')->first()->id,
+                'rol_id'      => Rol ::where('nombre','Desarrollador')->first()->id,
+                'telefono' => '+584128505504',
+                'whatsapp' => '+584128505504',
+                'activo' => true
     		]);
+
+            $contacto = Contacto::create([
+                'usuario_id' => $usuario->id 
+            ]);
 
             $usuario->asignarPermisosPorRol();
 

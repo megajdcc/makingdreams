@@ -39,6 +39,8 @@ class User extends Authenticatable
         'fecha_nacimiento',
         'genero' , // 1 => Masculino, 2 => femenino
         'activo', // activo o no valor booleano
+        'telefono',
+        'whatsapp',
         'imagen',
         'email',
         'password',
@@ -152,30 +154,30 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'usuario_referidos', 'referido_id', 'referidor_id')->withPivot(['link_referencia']);
     }
 
-    /**
-     * Un usuario puede tener cero o cincos cuentas Bancarias asociadas...
-     */
-    public function datosBancarios(){
-        return $this->hasMany(DatoBancario::class,'usuario_id','id');
-    }
+    // /**
+    //  * Un usuario puede tener cero o cincos cuentas Bancarias asociadas...
+    //  */
+    // public function datosBancarios(){
+    //     return $this->hasMany(DatoBancario::class,'usuario_id','id');
+    // }
 
     /**
      * Un usuario puede tener 1  o 5 numeros de telefonos;
      */
-    public function telefonos(){
-        return $this->hasMany(Telefono::class,'usuario_id','id');
-    }
+    // public function telefonos(){
+    //     return $this->hasMany(Telefono::class,'usuario_id','id');
+    // }
 
-    /**
-     * Un usuario Puede tener solo una cuenta...
-     */
-    public function cuenta(){
-        return $this->hasOne(EstadoCuenta::class,'usuario_id','id');
-    }
+    // /**
+    //  * Un usuario Puede tener solo una cuenta...
+    //  */
+    // public function cuenta(){
+    //     return $this->hasOne(EstadoCuenta::class,'usuario_id','id');
+    // }
 
-    public function aperturarCuenta() : EstadoCuenta{
-        return EstadoCuenta::aperturar($this);
-    }
+    // public function aperturarCuenta() : EstadoCuenta{
+    //     return EstadoCuenta::aperturar($this);
+    // }
 
     public function crearCodigo(array $datos): Link{
         return Link::create([
@@ -186,14 +188,14 @@ class User extends Authenticatable
     } 
 
 
-    public function agregarTelefono(array $datos) : Telefono{
+    // public function agregarTelefono(array $datos) : Telefono{
 
-        return Telefono::create([
-            ...$datos,
-            ...['usuario_id' => $this->id]
-        ]);
+    //     return Telefono::create([
+    //         ...$datos,
+    //         ...['usuario_id' => $this->id]
+    //     ]);
 
-    }
+    // }
 
 
     public function agregarDatoBancario(array $datos): DatoBancario
@@ -208,24 +210,27 @@ class User extends Authenticatable
         return $this->hasMany(Pago::class,'usuario_id','id');
     }
 
-    public function tableros(){
-        return $this->hasMany(Tablero::class,'beneficiario_id','id');
+    public function puestos(){
+        return $this->hasMany(Puesto::class,'usuario_id','id');
     }
-
+    
+    public function contacto(){
+        return $this->hasOne(Contacto::class,'usuario_id','id');
+    }
 
     public function cargar() : User{
         $this->cuenta;
-        $this->telefonos;
-        $this->datosBancarios;
+        // $this->telefonos;
+        // $this->datosBancarios;
         $this->referidor;
         $this->link;
         $this->usuario = $this->getFullName();
         $this->permisos;
         $this->rol;
         $this->avatar = $this->getAvatar();
-        $this->telefono = $this->telefonos->where('principal',true)->first()?->numero;
         $this->pagos;
-        $this->tableros;
+        $this->puestos;
+        $this->contacto;
         return $this;
     }
 

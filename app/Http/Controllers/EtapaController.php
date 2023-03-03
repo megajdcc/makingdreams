@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Etapa;
+use App\Models\Tablero;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,7 @@ class EtapaController extends Controller
             ['descripcion', 'like', "%{$datos['q']}%", 'or'],
             ['remuneracion', 'like', "%{$datos['q']}%", 'or'],
         ])
-        ->with('etapa')
+        ->with(['etapa','tablero'])
         ->orderBy($datos['sortBy'] ?: 'id', $datos['isSortDirDesc'] ? 'desc' : 'asc')
         ->paginate($datos['perPage']?: 10000);
         
@@ -37,7 +38,7 @@ class EtapaController extends Controller
 
     public function fetch(Etapa $etapa){
 
-        $etapa->load('etapa');
+        $etapa->load(['etapa','tablero']);
 
         return response()->json($etapa);
 
@@ -47,10 +48,9 @@ class EtapaController extends Controller
 
     public function getAll(){
 
-        $etapas = Etapa::all();
-
-        $etapas->load('etapa');
-
+        $etapas = Etapa::orderBy('monto')->get();
+        $etapas->load(['etapa','tablero']);
+        
         return response()->json($etapas);
 
     }
@@ -83,11 +83,19 @@ class EtapaController extends Controller
         try{
             DB::beginTransaction();
             $etapa = Etapa::create($this->validar($request));
+
+            $tablero = Tablero::create([
+                'etapa_id' => $etapa->id
+            ]);
             
-            $etapa->etapa;
+           
+            
 
             DB::commit();
             $result = true;
+
+            $etapa->refresh();
+            $etapa->load(['etapa', 'tablero']);
         }catch(\Exception $e){
             DB::rollBack();
             $result = false;
@@ -115,10 +123,12 @@ class EtapaController extends Controller
         try {
             DB::beginTransaction();
             $etapa->update($this->validar($request,$etapa));
-            $etapa->etapa;
+            
 
             DB::commit();
             $result = true;
+            $etapa->refresh();
+            $etapa->load(['etapa', 'tablero']);
         } catch (\Exception $e) {
             DB::rollBack();
             $result = false;

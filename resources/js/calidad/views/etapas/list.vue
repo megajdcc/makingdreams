@@ -12,7 +12,7 @@
         <b-card class="mt-1">
           <b-table ref="refTable" :items="fetchData" responsive :fields="tableColumns" primary-key="id"
             :sort-by.sync="sortBy" empty-text="No se encontró ninguna Etapa" :sort-desc.sync="isSortDirDesc"
-            sticky-header="700px" :no-border-collapse="false" small :busy="loading" show-empty>
+            sticky-header="700px" :no-border-collapse="false"  :busy="loading" show-empty>
 
             <template #cell(monto)="{ item }">
               <span class="text-nowrap">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tablero;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,18 +14,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tableros', function (Blueprint $table) {
-            $table->string('id', 6)->primary();
-            $table->foreignId('etapa_id')->constrained('etapas')
+        Schema::create('puestos', function (Blueprint $table){
+            $table->id();
+            $table->foreignIdFor(Tablero::class,'tablero_id')->constrained('tableros')
             ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('beneficiario_id')->constrained('users')
+            $table->foreignId('usuario_id')->constrained('users')
             ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamp('cierre')->nullable();
-            $table->decimal('recibido')->nullable();
+            $table->tinyInteger('ubicacion');
+            $table->boolean('abonado')->default(false);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -33,7 +33,7 @@ return new class extends Migration
      * @return void
      */
     public function down()
-    {   
-        Schema::dropIfExists('tableros');
+    {
+        Schema::dropIfExists('puestos');
     }
 };

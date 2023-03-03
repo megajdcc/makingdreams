@@ -1,20 +1,25 @@
 <template>
   <b-container fluid class="px-0 mx-0">
 
+    <slot name="titulo" :total="total">
+
+    </slot>
     <!-- Table Container Card -->
-    <b-card no-body class="mb-0">
+    <b-card no-body class="mb-0" v-if="!hideHeader">
 
       <div class="m-2">
         <!-- Table Top -->
         <b-row>
           <!-- Per Page -->
-          <b-col cols="12" md="4" class="d-flex align-items-center justify-content-start mb-1 mb-md-0">
-            <per-page v-model="perPage" :perPageOptions="perPageOptions"></per-page>
-          </b-col>
+          <b-col cols="12" md="4" class="d-flex align-items-center justify-content-start mb-1 mb-md-0" >
+            <per-page v-model="perPage" :perPageOptions="perPageOptions" v-if="!hidePerPage" ></per-page>
+            <slot name="filter">
 
-          <b-col md="8">
-            <b-input-group size="sm">
-              <b-form-input v-model="searchQuery" type="search" placeholder="..." />
+            </slot>
+          </b-col>
+          <b-col :md="8">
+            <b-input-group size="lg">
+              <b-form-input v-model="searchQuery" type="search" placeholder="Buscar Beneficiario, Tablero ..." />
               <b-input-group-append>
                 <slot name="btn-action"></slot>
               </b-input-group-append>
@@ -27,32 +32,43 @@
 
     </b-card>
 
-    <section class="w-100 d-flex justify-content-center py-3" v-if="!isTable && loading">
-      <b-spinner>
-      </b-spinner>
+    <!-- <section class="w-100 d-flex justify-content-center py-3" v-if="!isTable && loading"  >
+         <b-spinner>
+         </b-spinner>
+      </section> -->
+
+    <section v-loading="loading" class="w-100 mt-1" style="min-height:100px">
+      <slot name="contenido" :items="items" :eliminar="eliminar" :fetchData="fetchData" :tableColumns="tableColumns"
+        :sortB="sortBy" :isSortDirDesc="isSortDirDesc" :perPage="perPage" :refTable="refTable" :refetchData="refetchData">
+      </slot>
     </section>
-
-
-    <slot name="contenido" :eliminar="eliminar"> 
-      
-    </slot>
 
     <paginate-table :dataMeta="dataMeta" :currentPage.sync="currentPage" :perPage="perPage" :total="total"
       class="mt-1" />
 
-    <b-card class="mt-1">
+    <b-card class="mt-1" v-if="!hideFooter">
 
 
       <b-container class="mb-1">
         <b-row>
           <b-col class="px-1">
-            <b-button @click="regresar" size="sm">Regresar</b-button>
+            <b-button-group size="sm">
+
+              <slot name="botonera-footer">
+
+              </slot>
+
+              <b-button @click="regresar" size="sm">Regresar</b-button>
+            </b-button-group>
+
           </b-col>
         </b-row>
       </b-container>
 
 
     </b-card>
+    <slot name="otros"></slot>
+
   </b-container>
 </template>
 
@@ -80,7 +96,7 @@ import {
 import store from '@/store'
 import router from '@/router'
 
-import { ref, toRefs, computed, onActivated,onMounted } from 'vue'
+import { ref, toRefs, computed, onActivated } from 'vue'
 
 import { regresar } from '@core/utils/utils.js'
 
@@ -112,7 +128,10 @@ export default {
 
   props: {
     actions: Object | Function,
-    isTable: Boolean
+    isTable: Boolean,
+    hideFooter: Boolean,
+    hideHeader: Boolean,
+    hidePerPage:Boolean
   },
 
 
@@ -127,18 +146,17 @@ export default {
       perPage,
       currentPage,
       total,
-      items = [],
+      items,
       perPageOptions,
       dataMeta,
       refetchData,
       fetchData,
       eliminar,
-      tableColumns,
-      refTable
+      tableColumns = [],
+      refTable = null,
     } = actions.value;
 
     onActivated(() => refetchData())
-    onMounted(() => refetchData())
 
     return {
       items,
@@ -156,9 +174,8 @@ export default {
       regresar,
       eliminar,
       tableColumns,
-      refTable
-
-
+      refTable,
+      irEditar: (negocio) => router.push({ name: 'negocio.edit', params: { id: negocio.id } })
     }
 
   }

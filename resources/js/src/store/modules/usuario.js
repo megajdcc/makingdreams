@@ -28,44 +28,42 @@ export default {
 				link:null,
 				codigo_referidor:null,
 				datos_bancarios: [],
-				telefonos: [],
+				telefono:null,
+				whatsapp:null,
 				backoffice: false,
 				pagos:[],
-				tableros:[]
-
-
+				tableros:[],
+				puestos:[],
 			},
 
 			user: {
 				id: null,
-				nombre: null,
-				apellido: null,
-				username: null,
-				genero: 1, // 1 =>mas 2 => fem
+				nombre:null,
+				apellido:null,
+				username:null,
+				genero:1, // 1 =>mas 2 => fem
 				fecha_nacimiento: '',
 				imagen: '',
 				email: '',
 				password: '',
 				rol: {},
-				rol_id: null,
-				avatar: null,
-				ciudad_id: null,
-				estado_id: null,
-				pais_id: null,
-				ciudad: null,
-				estado: null,
-				pais: null,
-				link: null,
-				codigo_referidor: null,
-				datos_bancarios:[],
-				telefonos:[],
+				rol_id:null,
+				avatar:null,
+				ciudad_id:null,
+				estado_id:null,
+				pais_id:null,
+				ciudad:null,
+				estado:null,
+				pais:null,
+				link:null,
+				codigo_referidor:null,
+				datos_bancarios: [],
+				telefono:null,
+				whatsapp:null,
 				backoffice: false,
-				pagos: [],
-				tableros: []
-
-
-
-
+				pagos:[],
+				tableros:[],
+				puestos:[],
 			},
 
 			usuarios: [],
@@ -99,32 +97,32 @@ export default {
 		clearUsuario(state){
 			state.user = {
 				id: null,
-				nombre: null,
-				apellido: null,
-				username: null,
-				genero: 1, // 1 => mas 2 => fem
+				nombre:null,
+				apellido:null,
+				username:null,
+				genero:1, // 1 =>mas 2 => fem
 				fecha_nacimiento: '',
 				imagen: '',
 				email: '',
 				password: '',
 				rol: {},
-				rol_id: null,
-				avatar: null,
-				ciudad_id: null,
-				estado_id: null,
-				pais_id: null,
-				ciudad: null,
-				estado: null,
-				pais: null,
-				link: null,
-				codigo_referidor: null,
+				rol_id:null,
+				avatar:null,
+				ciudad_id:null,
+				estado_id:null,
+				pais_id:null,
+				ciudad:null,
+				estado:null,
+				pais:null,
+				link:null,
+				codigo_referidor:null,
 				datos_bancarios: [],
-				telefonos: [],
+				telefono:null,
+				whatsapp:null,
 				backoffice: false,
-				pagos: [],
-				tableros: []
-
-
+				pagos:[],
+				tableros:[],
+				puestos:[],
 			}
 		},
 
@@ -181,24 +179,33 @@ export default {
 		limpiarUsuario(state){
 
 			state.usuario = {
-				id: null,
-				nombre: null,
-				apellido: null,
-				username: null,
-				genero: 1, // 1 =>mas 2 => fem
+			id: null,
+				nombre:null,
+				apellido:null,
+				username:null,
+				genero:1, // 1 =>mas 2 => fem
 				fecha_nacimiento: '',
 				imagen: '',
 				email: '',
 				password: '',
 				rol: {},
-				rol_id: null,
-				avatar: null,
-				ciudad_id: null,
-				estado_id: null,
-				pais_id: null,
-				ciudad: null,
-				estado: null,
-				pais: null
+				rol_id:null,
+				avatar:null,
+				ciudad_id:null,
+				estado_id:null,
+				pais_id:null,
+				ciudad:null,
+				estado:null,
+				pais:null,
+				link:null,
+				codigo_referidor:null,
+				datos_bancarios: [],
+				telefono:null,
+				whatsapp:null,
+				backoffice: false,
+				pagos:[],
+				tableros:[],
+				puestos:[],
 			}
 			
 		},

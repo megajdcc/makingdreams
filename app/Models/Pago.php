@@ -17,7 +17,9 @@ class Pago extends Model
         'concepto',
         'detalles',
         'metodo', // 1 => paypal, 2 => wompi 3 => transferencia 
-        'comprobante'
+        'comprobante',
+        'model_id',
+        'model_type'
     ];
 
     
@@ -26,11 +28,17 @@ class Pago extends Model
         'detalles' => 'array'
     ];
 
-    public function usuario(){
+    public function model(){
+        return $this->morphTo();
+    }
 
+    public function usuario(){
         return $this->belongsTo(User::class,'usuario_id','id');
     }
 
+    public function puesto(){
+        return $this->hasOne(Puesto::class,'pago_id','id');
+    }
 
 
 }

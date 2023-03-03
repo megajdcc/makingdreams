@@ -20,8 +20,13 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->text('concepto');
             $table->json('detalles')->nullable();
+            $table->tinyInteger('metodo')->default(1);
+            $table->string('comprobante')->nullable();
 
-            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('usuario_id')
+            ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('model_type');
+            $table->bigInteger('model_id');
             $table->timestamps();
         });
     }

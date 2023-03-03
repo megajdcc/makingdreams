@@ -93,6 +93,12 @@
                 Guardar
               </b-button>
 
+               <b-button type="button" variant="warning" title="Nueva Etapa" v-loading="loading" :disabled="loading" 
+               :to="{name:'etapa.create'}" v-if="formulario.id">
+                <feather-icon icon="PlusIcon" />
+                Nueva Etapa
+              </b-button>
+
               <b-button variant="dark" title="regresar" @click="regresar">
                 <feather-icon icon="ArrowLeftIcon"/>
                 Regresar

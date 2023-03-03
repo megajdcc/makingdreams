@@ -53,6 +53,10 @@ import etapa from './modules/etapa.js'
 
 import tablero from './modules/tablero.js'
 
+// Puesto
+
+import puesto from './modules/puesto.js'
+
 
 Vue.use(Vuex)
 
@@ -153,7 +157,8 @@ export default new Vuex.Store({
     movimiento,
     pago,
     etapa,
-    tablero
+    tablero,
+    puesto
     
   },
 

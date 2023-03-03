@@ -1,250 +1,87 @@
 <template>
-      <tablero-tree  :nodos="nodos" />
+  <listado :actions="actions" hideFooter hidePerPage>
 
-      <!-- <section class="d-flex justify-content-center container-first  w-100 flex-column align-items-center">
-      
-            <article class="tablero">
-            
-            </article>
+    <template #filter>
+      <v-select v-model="etapa" :options="etapas" label="nombre" :reduce="option => option.id"  class="w-100 form-control-lg"></v-select>
+    </template>
 
-            <section class="d-flex justify-content-around  container-second w-100" >
-            
-              <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center " >
-                    <article class="tablero">
-
-                    </article>
-
-                    <section class="d-flex justify-content-around  container-second w-100">
-                    
-                      <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center">
-
-                        <article class="tablero"> 
-                    
-                        </article>
-
-                        <section class="d-flex justify-content-around  container-second w-100">
-                        
-                          <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                            <article class="tablero">
-                        
-                            </article>
-                          </section>
-                        
-                          <section class="flex-grow-1  d-flex justify-content-center ">
-                            <article class="tablero">
-                        
-                            </article>
-                          </section>
-                        
-                        </section>
-
-                      </section>
-                    
-                      <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center  ">
-                        <article class="tablero">
-                    
-                        </article>
-
-                        <section class="d-flex justify-content-around  container-second w-100">
-                        
-                          <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                            <article class="tablero">
-                        
-                            </article>
-                          </section>
-                        
-                          <section class="flex-grow-1  d-flex justify-content-center ">
-                            <article class="tablero">
-                        
-                            </article>
-                          </section>
-                        
-                        </section>
-
-                      </section>
-                    
-                    </section>
-
-                </section>
-
-                <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center  ">
-                    
-                    <article class="tablero">
-                    
-                    </article>
-
-                    <section class="d-flex justify-content-around  container-second w-100">
-                      
-                        <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                          <article class="tablero">
-                      
-                          </article>
-
-                          <section class="d-flex justify-content-around  container-second w-100">
-                            
-                              <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                                <article class="tablero">
-                            
-                                </article>
-                              </section>
-                            
-                                <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center">
-                                  <article class="tablero">
-                                
-                                  </article>
-                                
-                                  <section class="d-flex justify-content-around  container-second w-100">
-                                
-                                    <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                                      <article class="tablero">
-                                
-                                      </article>
-                                    </section>
-                                
-                                    <section class="flex-grow-1  d-flex justify-content-center ">
-                                      <article class="tablero">
-                                
-                                      </article>
-                                    </section>
-                                
-                                  </section>
-                                
-                                
-                                </section>
-                            
-                          </section>
-
-                        </section>
-                      
-                        <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center">
-                          <article class="tablero">
-                      
-                          </article>
+    <template #contenido="{items,refetchData}">
+        <tablero   :puestos="items" :tableroId="getTablero" @reload="refetchData" :etapa="etapa" />      
+    </template>
 
 
-                          <section class="d-flex justify-content-around  container-second w-100">
-                          
-                            <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center">
-                              <article class="tablero">
-                          
-                              </article>
 
-                                <section class="d-flex justify-content-around  container-second w-100">
-                                
-                                  <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                                    <article class="tablero">
-                                
-                                    </article>
-                                  </section>
-                                
-                                  <section class="flex-grow-1  d-flex justify-content-center ">
-                                    <article class="tablero">
-                                
-                                    </article>
-                                  </section>
-                                
-                                </section>
-
-                            </section>
-                          
-                            <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center">
-                              <article class="tablero">
-                          
-                              </article>
-
-                                <section class="d-flex justify-content-around  container-second w-100">
-                                
-                                  <section class="flex-grow-1  d-flex justify-content-center flex-column align-items-center ">
-                                    <article class="tablero">
-                                
-                                    </article>
-                                  </section>
-                                
-                                  <section class="flex-grow-1  d-flex justify-content-center ">
-                                    <article class="tablero">
-                                
-                                    </article>
-                                  </section>
-                                
-                                </section>
-
-
-                            </section>
-                          
-                          </section>
-
-
-                        </section>
-                      
-                    </section>
-                    
-                </section>
-
-            </section>
-
-        </section> -->
-
-
+  </listado>
 </template>
 
 <script>
 
 import store from '@/store'
 
-import {toRefs,ref,computed} from 'vue'
+import {toRefs,ref,computed,onMounted,watch} from 'vue'
 
+import useTableroList from './useTableroList';
+import vSelect from 'vue-select'
+
+import {
+  BButton,
+  BCard,
+  BAvatar,
+  BCardTitle
+} from 'bootstrap-vue'
 
 export default {
 
   components:{
-    TableroTree:() => import('components/TableroTree.vue')
+
+    Listado:() => import('components/Listado.vue'),
+    BButton,
+    BCard,
+    BAvatar,
+    BCardTitle,
+    Tablero:() => import('components/Tablero.vue'),
+    vSelect
+
   },
 
 
   setup(){
-    
+
+   
+    const {etapas} = toRefs(store.state.etapa)
+    const etapa = ref(null)
+
+    const actions = useTableroList(etapa);
+
+    const cargar  = () => {
+      if(etapas.value.length){
+        etapa.value = etapas.value.at(0) ? etapas.value.at(0).id : null
+        actions.refetchData();
+      }else{
+        store.dispatch('etapa/getAll').then(() => {
+           etapa.value = etapas.value.at(0) ? etapas.value.at(0).id : null
+          actions.refetchData();
+        })
+      }
+
+    }
+    onMounted(() => cargar())
+  
+    return {
+
+      loading:computed(() => store.state.loading),
+      actions,
+      etapas,
+      etapa,
+      getTablero:computed(() => {
+        return etapas.value.find(val => val.id == etapa.value) ? etapas.value.find(val => val.id == etapa.value).tablero.id : null
+      })
+
+
+    }
   }
 
 }
 
 </script>
 
-<style lang="scss">
-.tableros-container{
-
-    width:100%;
-    height: auto;
-    overflow-y: scroll;
-
-    .container-first {
-      // height : 60px;
-      width: 100%;
-      // border-radius: 50%;
-      position:relative;
-    }
-  
-    .container-second {
-      // height: 60px;
-      // width:75%;
-      margin-top: 4rem;
-      position: relative;
-    }
-  
-    .tablero {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background-color: white;
-      cursor:pointer;
-      transition:1.5s ease;
-      &:hover{
-        // transform: scale(1.4, 0.5);
-        // width: 70px;
-        // height: 70px;
-        
-      }
-
-    }
-
-}
-</style>

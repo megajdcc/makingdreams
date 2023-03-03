@@ -36,7 +36,7 @@ export default {
       size: {
          type:String,
          required:false,
-         default:'sm'
+         default:'lg'
       },
       
       perPage:{

@@ -19,7 +19,6 @@ class SistemaController extends Controller
 
         $sistema = Sistema::get()->first(); 
 
-        $sistema->load('cuentas');
 
         return response()->json($sistema);
 
@@ -101,48 +100,8 @@ class SistemaController extends Controller
 
     }
 
-    public function agregarCuenta(Request $request,Sistema $sistema){
+ 
 
-
-        $datos = $request->validate([
-            'entidad' => 'required',
-            'numero' =>  'required'
-        ]);
-
-        try{
-            DB::beginTransaction();
-
-            $cuenta = $sistema->agregarCuenta($datos);
-
-            DB::commit();
-            $result = true;
-        }catch(\Exception $e){
-            DB::rollBack();
-            $result = false;
-        }
-
-        $sistema->load('cuentas');
-
-        return response()->json(['result' => $result, 'sistema' => $sistema,'cuenta' => $result ? $cuenta : null]);
-
-    }
-
-    public function quitarCuenta(Sistema $sistema, Cuenta $cuenta){
-        try {
-            DB::beginTransaction();
-
-            $result = $sistema->quitarCuenta($cuenta);
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $result = false;
-        }
-
-        $sistema->load('cuentas');
-
-        return response()->json(['result' => $result, 'sistema' => $sistema]);
-    }
 
 
 }

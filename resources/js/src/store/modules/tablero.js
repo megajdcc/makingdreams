@@ -11,7 +11,11 @@ export default{
       beneficiario:null,
       tablero_id:null,
       tablero:null,
-      cierre:null
+      cierre:null,
+      tablero_id:null,
+      tablero:null,
+      abonadores:[],
+      
     },
 
     tableros:[]
@@ -57,7 +61,11 @@ export default{
         beneficiario: null,
         tablero_id: null,
         tablero: null,
-        cierre: null
+        cierre: null,
+        tablero_id:null,
+        tablero:null,
+        abonadores: [],
+
       }
 
 
@@ -82,6 +90,7 @@ export default{
   },
 
   actions:{
+
     getAll({ commit }) {
       return new Promise((resolve, reject) => {
         axios.get(`/api/tableros/get/all`).then(({ data }) => {
@@ -93,13 +102,13 @@ export default{
       })
     },
 
+    
+
 
     fetchData({ state, commit }, datos) {
       return new Promise((resolve, reject) => {
         axios.post('/api/tableros/fetch/data', datos).then(({ data }) => {
-
-          commit('setTableros', data.etapas)
-
+          commit('setTableros', data.tableros)
           resolve(data)
         }).catch(e => reject(e))
 
@@ -110,8 +119,8 @@ export default{
     fetch({ state, commit }, tablero_id) {
       return new Promise((resolve, reject) => {
 
-        axios.get(`/api/tableros/${etapa_id}/fetch/data`).then(({ data }) => {
-          commit('setEtapa', data.etapa)
+        axios.get(`/api/tableros/${tablero_id}/fetch/data`).then(({ data }) => {
+          commit('settablero', data.tablero)
           resolve(data)
         }).catch(e => reject(e))
 
@@ -125,11 +134,11 @@ export default{
 
         if (datos.id) {
 
-          axios.put(`/api/etapas/${datos.id}`, datos).then(({ data }) => {
+          axios.put(`/api/tableros/${datos.id}`, datos).then(({ data }) => {
 
             if (data.result) {
 
-              commit('update', data.etapa)
+              commit('update', data.tablero)
             }
 
             resolve(data)
@@ -137,11 +146,11 @@ export default{
           }).catch(e => reject(e))
         } else {
 
-          axios.post(`/api/etapas`, datos).then(({ data }) => {
+          axios.post(`/api/tableros`, datos).then(({ data }) => {
 
             if (data.result) {
 
-              commit('push', data.etapa)
+              commit('push', data.tablero)
             }
 
             resolve(data)
@@ -152,15 +161,15 @@ export default{
     },
 
 
-    eliminar({ commit }, etapa_id) {
+    eliminar({ commit }, tablero_id) {
 
 
       return new Promise((resolve, reject) => {
 
-        axios.delete(`/api/etapas/${etapa_id}`).then(({ data }) => {
+        axios.delete(`/api/tableros/${tablero_id}`).then(({ data }) => {
 
           if (data.result) {
-            commit('put', etapa_id)
+            commit('put', tablero_id)
           }
           resolve(data)
         }).catch(e => reject(e))

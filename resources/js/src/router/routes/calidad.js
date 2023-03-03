@@ -724,6 +724,24 @@ export default [
                   { text: 'Tableros', active: true },
                ]
             }
+         },
+
+         {
+            path: 'create',
+            component: () => import('views/tableros/create.vue'),
+            name: 'tablero.create',
+            meta: {
+               resource: 'tableros',
+               action: 'write',
+               pageTitle: 'Tableros',
+               navActiveLink:'tableros',
+               breadcrumb: [
+                  { text: 'Home', to: "home", active: false },
+                  { text: 'Tableros', active:false,to:{name:'tableros'} },
+                  { text: 'Crear', active: true },
+
+               ]
+            }
          }
       ]
    },

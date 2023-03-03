@@ -13,18 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tableros', function (Blueprint $table) {
-            $table->string('id', 6)->primary();
-            $table->foreignId('etapa_id')->constrained('etapas')
+        Schema::create('contactos', function (Blueprint $table) {
+            $table->id();
+            $table->string('whatsapp')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('telefono_1')->nullable();
+            $table->string('telefono_2')->nullable();
+            $table->string('otro')->nullable();
+            $table->foreignId('usuario_id')->constrained('users')
             ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('beneficiario_id')->constrained('users')
-            ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamp('cierre')->nullable();
-            $table->decimal('recibido')->nullable();
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -33,7 +32,7 @@ return new class extends Migration
      * @return void
      */
     public function down()
-    {   
-        Schema::dropIfExists('tableros');
+    {
+        Schema::dropIfExists('contactos');
     }
 };

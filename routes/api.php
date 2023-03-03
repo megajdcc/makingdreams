@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, EtapaController, HomeController, PagoController, SistemaController};
+use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, EtapaController, HomeController, PagoController, PuestoController, SistemaController, TableroController};
 use App\Models\Pais;
 use App\Models\Estado;
 use App\Http\Controllers\PaisController;
@@ -166,8 +166,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /**************************/
     /* Sistema
     /**************************/
-    Route::put('sistemas/{sistema}/agregar/cuenta',[SistemaController::class,'agregarCuenta']);
-    Route::delete('sistemas/{sistema}/eliminar/cuenta/{cuenta}',[SistemaController::class,'quitarCuenta']);
     Route::resource('sistemas',SistemaController::class);
 
 
@@ -195,6 +193,21 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('etapas/{etapa}/fetch/data',[EtapaController::class,'fetch']);
     Route::get('etapas/get/all',[EtapaController::class,'getAll']);
     Route::resource('etapas', EtapaController::class);
+
+
+    /*****************************/
+    /* Tableros
+    /*****************************/
+    
+
+    Route::post('tableros/fetch/data',[TableroController::class,'fetchData']);
+    Route::get('tableros/get/all',[TableroController::class,'getAll']);
+    Route::resource('tableros',TableroController::class);
+
+    /*****************************/
+    /* Puesto
+    /*****************************/
+    Route::resource('puestos',PuestoController::class);
 
 
 

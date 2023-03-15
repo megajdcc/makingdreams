@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Datatables;
 use App\Events\{UsuarioCreado};
+use App\Models\Contacto;
 use App\Models\Entrega;
 use App\Models\EstadoCuenta;
 use App\Models\Telefono;
@@ -40,9 +41,11 @@ class UserController extends Controller
 
     private function validar(Request $request,User $usuario = null){
         return $request->validate([
-            'nombre'           => 'required',
-            'apellido'         => 'nullable',
-            'genero'         => 'nullable',
+            'nombre'   => 'required',
+            'apellido' => 'nullable',
+            'genero'   => 'nullable',
+            'telefono' => 'required',
+            'whatsapp' => 'nullable',
             'username' => ['nullable'],
             'email'            => ['required', $usuario ? Rule::unique('users', 'email')->ignore($usuario): 'unique:users,email'],
             'fecha_nacimiento' => 'nullable',
@@ -71,11 +74,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
-    
         $datos = $this->validar($request);
-
- 
         try{
             DB::beginTransaction();
             $usuario = $this->crearUsuario($datos);
@@ -84,22 +83,17 @@ class UserController extends Controller
 
             $usuario->aperturarCuenta();
 
-            $usuario->rol;
-            $usuario->rol->permisos;
-            
-            $usuario->ciudad;
-            $usuario->estado;
-            $usuario->pais;
-            $usuario->cuenta?->movimientos;
-            $usuario->datosBancarios;
-
-            $usuario->avatar = $usuario->getAvatar();
             $result = true;
 
-        }catch(Exception $e){
-            
-            dd($e->getMessage());
+            $contacto = Contacto::create([
+                'usuario_id' => $usuario->id,
+                'telefono_1' => $usuario->telefono,
+                'whatsapp' => $usuario->whatsapp ? $usuario->telefono : null,
+                'correo' => $usuario->email
+            ]);
 
+            $usuario->cargar();
+        }catch(Exception $e){
             DB::rollBack();
             $result = false;
         
@@ -181,9 +175,8 @@ class UserController extends Controller
             $usuario->rol;
             $usuario->ciudad;
             $usuario->rol->permisos;
-            $usuario->datosBancarios;
-            $usuario->telefonos;
-            $usuario->avatar = $usuario->getAvatar();
+            $usuario->cargar();
+
             $result = true;
         }catch(Exception $e){
             DB::rollBack();
@@ -205,7 +198,7 @@ class UserController extends Controller
         try{
             DB::beginTransaction();
 
-                $usuario->delete();
+            $usuario->delete();
 
             DB::commit();
             $result = true;
@@ -230,7 +223,6 @@ class UserController extends Controller
             $usuario->rol->permisos;
             $usuario->avatar = $usuario->getAvatar();
             $usuario->datosBancarios;
-            $usuario->telefonos;
         }
         return response()->json($usuarios);
     }
@@ -296,14 +288,8 @@ class UserController extends Controller
 
         $usuario = $request->user();
         $usuario->tokens;
-        $usuario->ciudad;
-        $usuario->rol;
         $usuario->habilidades = $usuario->getHabilidades();
-        $usuario->avatar = $usuario->getAvatar();
-        $usuario->cuenta?->movimientos;
-        $usuario->telefonos;
-        $usuario->datosBancarios;
-        $usuario->link;
+        $usuario->cargar();
         $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
         return response()->json(['result' => true, 'usuario' => $usuario]);
     }
@@ -540,11 +526,10 @@ class UserController extends Controller
                 $usuario->tokens;
                 $usuario->rol;
                 $usuario->habilidades = $usuario->getHabilidades();
-                $usuario->avatar = $usuario->getAvatar();
                 $usuario->link;
                 $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
 
-                $usuario->telefonos;
+                $usuario->cargar();
             DB::commit();
             $result = true;
         }catch(\Exception $e){
@@ -576,14 +561,12 @@ class UserController extends Controller
             $usuario->agregarTelefono($datos);
 
             $usuario->tokens;
-            $usuario->rol;
             $usuario->habilidades = $usuario->getHabilidades();
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
-            $usuario->datosBancarios;
-            $usuario->telefonos;
 
+            $usuario->cargar();
 
             DB::commit();   
             $result = true;
@@ -616,14 +599,11 @@ class UserController extends Controller
             $usuario->agregarDatoBancario($datos);
 
             $usuario->tokens;
-            $usuario->rol;
             $usuario->habilidades = $usuario->getHabilidades();
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
-            $usuario->datosBancarios;
-            $usuario->telefonos;
-
+            $usuario->cargar();
 
             DB::commit();
             $result = true;
@@ -643,14 +623,11 @@ class UserController extends Controller
             $telefono->delete();
 
             $usuario->tokens;
-            $usuario->rol;
             $usuario->habilidades = $usuario->getHabilidades();
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
-            $usuario->datosBancarios;
-
-            $usuario->telefonos;
+            $usuario->cargar();
             DB::commit();
             $result = true;
         }catch(\Exception $e){
@@ -674,13 +651,11 @@ class UserController extends Controller
             $cuenta->delete();
 
             $usuario->tokens;
-            $usuario->rol;
             $usuario->habilidades = $usuario->getHabilidades();
             $usuario->avatar = $usuario->getAvatar();
             $usuario->link;
             $usuario->codigo_referidor = $usuario->link ? $usuario->link->link : '';
-            $usuario->datosBancarios;
-            $usuario->telefonos;
+            $usuario->cargar();
             DB::commit();
             $result = true;
         } catch (\Exception $e) {

@@ -14,11 +14,12 @@ class LinkController extends Controller
         
         if($link){
             $result = true;
+            $usuario = $link->usuario->cargar();
         }else{
             $result = false;
         }
 
-        return response()->json(['result' => $result]);
+        return response()->json(['result' => $result,'referidor' => $result ? $usuario : null]);
 
     }
 

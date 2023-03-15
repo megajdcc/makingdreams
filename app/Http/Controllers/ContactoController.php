@@ -3,28 +3,71 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contacto;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ContactoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+    
+    public function fetchData(Request $request){
+
+        $datos = $request->all();
+
+        $paginator = Contacto::where([
+            ['whatsapp','like',"%{$datos['q']}%",'OR'],
+            ['correo', 'like', "%{$datos['q']}%", 'OR'],
+            ['telefono_1', 'like', "%{$datos['q']}%", 'OR'],
+            ['telefono_2', 'like', "%{$datos['q']}%", 'OR'],
+            ['otro', 'like', "%{$datos['q']}%", 'OR'],
+        ])->whereHas('usuario',function(Builder $q) use($datos){
+            $q->where([
+                    ['nombre', 'like', "%{$datos['q']}%", 'OR'],
+                    ['apellido', 'like', "%{$datos['q']}%", 'OR'],
+                    ['username', 'like', "%{$datos['q']}%", 'OR'],
+            ]);
+        })
+        ->with('usuario')
+        ->sortBy($datos['sortBy'] ?: 'id',$datos['isSortDirDesc'] ? 'desc' : 'asc')
+        ->paginate($datos['perPage']?: 1000);
+
+        return response()->json([
+            'total' => $paginator->total(),
+            'contactos' => $paginator->items()
+        ]);
+
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function fetch(Contacto $contacto){
+
+        $contacto->load(['usuario']);
+
+        return response()->json($contacto);
+    }
+
+    public function fetchForUser(User $usuario)
     {
-        //
+        $contacto = $usuario->contacto;
+
+        $contacto->load(['usuario']);
+
+        return response()->json($contacto);
+    }
+
+
+
+    private  function validar(Request $request, Contacto $contacto = null){
+        return $request->validate([
+            'whatsapp'   => 'nullable',
+            'correo'     => 'nullable|email',
+            'telefono_1' => 'nullable',
+            'telefono_2' => 'nullable',
+            'otro'       => 'nullable',
+            'mensaje'    => 'nullable',
+            'usuario_id' => 'required'
+        ]);
     }
 
     /**
@@ -35,30 +78,21 @@ class ContactoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datos = $this->validar($request);
+        try {
+            DB::beginTransaction();
+                $contacto = Contacto::create($datos);
+                $contacto->load('usuario');
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result,'contacto' => $result ? $contacto : null]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Contacto  $contacto
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Contacto $contacto)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Contacto  $contacto
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Contacto $contacto)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -69,7 +103,20 @@ class ContactoController extends Controller
      */
     public function update(Request $request, Contacto $contacto)
     {
-        //
+        $datos = $this->validar($request,$contacto);
+        try {
+            DB::beginTransaction();
+            $contacto->update($datos);
+
+            $contacto->load('usuario');
+            DB::commit();
+            $result = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $result = false;
+        }
+
+        return response()->json(['result' => $result, 'contacto' => $result ? $contacto : null]);
     }
 
     /**
@@ -80,6 +127,8 @@ class ContactoController extends Controller
      */
     public function destroy(Contacto $contacto)
     {
-        //
+        return response()->json(['result' => $contacto->delete()]);
     }
+
+
 }

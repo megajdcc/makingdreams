@@ -16,7 +16,7 @@ class Puesto extends Model
         'abonado',
         'cierre',
         'is_beneficiario',
-        'status', // 1 => 
+        'status', // 1 => Rojo , 2 => Naranja, 3 => Azul, 4 => Verde
     ];
 
 

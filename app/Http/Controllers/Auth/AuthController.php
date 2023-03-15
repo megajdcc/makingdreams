@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 
 use App\Events\UsuarioConectado;
 use App\Events\UsuarioDesconectado;
+use App\Models\Contacto;
 use App\Notifications\WelcomeUsuario;
 use App\Models\Link;
 
@@ -40,7 +41,7 @@ class AuthController extends Controller
             'username'        => 'required|unique:users,email',
             'nombre'          => 'required|string',
             'apellido'        => 'required|string',
-            'telefono'        => 'required|unique:telefonos,numero',
+            'telefono'        => 'required|unique:users,telefono',
             'pais_id'         => 'required',
             'email'           => 'required|unique:users,email',
             'link' => 'required',
@@ -56,9 +57,8 @@ class AuthController extends Controller
         try{
          DB::beginTransaction();
 
-            $datos = array_filter($data,fn($key) => $key != 'telefono',\ARRAY_FILTER_USE_KEY);
 
-            $usuario = User::create([...$datos, ...[
+            $usuario = User::create([...$data, ...[
                'password' =>\bcrypt('20464273jd'),
                'rol_id' => Rol::where('nombre', 'Usuario')->first()->id
             ]]);
@@ -72,20 +72,13 @@ class AuthController extends Controller
 
             $token = $tokenResult->plainTextToken;
             $usuario->token = $token;
-            $usuario->aperturarCuenta();
+
+            $usuario->createLink();
             $usuario->save();
-            
 
-
-            if($data['telefono']){
-               $usuario->agregarTelefono([
-                  'numero' => $data['telefono'],
-                  'principal' => true,
-                  'whatsapp' => true
-               ]);
-
-            }
-
+            $contacto = Contacto::create([
+               'usuario_id' => $usuario->id
+            ]);
 
             $usuario->asignarPermisosPorRol();
 
@@ -96,6 +89,8 @@ class AuthController extends Controller
         }catch(\Exception $e){
          DB::rollback();
          $result = false;
+
+         dd($e->getMessage());
 
         }
 
@@ -144,8 +139,6 @@ class AuthController extends Controller
          $user->link;
          $user->cargar();
          $user->codigo_referidor = $user->link ? $user->link->link :'';
-         $user->datosBancarios;
-         $user->telefonos;
          // broadcast(new UsuarioConectado($user))->toOthers();
 
          $result = true;

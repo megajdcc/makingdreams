@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{AuthController};
-use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, EstadoController, EtapaController, HomeController, PagoController, PuestoController, SistemaController, TableroController};
+use App\Http\Controllers\{UserController,NotificacionController,RolController,PermisoController, CiudadController, ContactoController, EstadoController, EtapaController, HomeController, PagoController, PuestoController, SistemaController, TableroController};
 use App\Models\Pais;
 use App\Models\Estado;
 use App\Http\Controllers\PaisController;
@@ -209,6 +209,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /*****************************/
     Route::resource('puestos',PuestoController::class);
 
+    /*****************************/
+    /* Contacto
+    /*****************************/
+
+    Route::post('contactos/fetch/data',[ContactoController::class,'fetchData']);
+    Route::get('contactos/{contacto}/fetch/data',[ContactoController::class,'fetch']);
+    Route::get('contactos/user/{usuario}/fetch/data',[ContactoController::class,'fetchForUser']);
+    Route::resource('contactos',ContactoController::class);
 
 
 });

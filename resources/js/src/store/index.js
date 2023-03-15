@@ -57,6 +57,9 @@ import tablero from './modules/tablero.js'
 
 import puesto from './modules/puesto.js'
 
+// Contacto
+
+import contacto from './modules/contacto.js'
 
 Vue.use(Vuex)
 
@@ -158,7 +161,8 @@ export default new Vuex.Store({
     pago,
     etapa,
     tablero,
-    puesto
+    puesto,
+    contacto
     
   },
 

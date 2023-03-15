@@ -53,6 +53,7 @@
               v-model="formulario.nombre"
               placeholder="Nombre"
               name="nombre"
+              readonly
             />
           </b-form-group>
         </b-col>
@@ -65,6 +66,7 @@
               v-model="formulario.apellido"
               name="apellido"
               placeholder="Apellido"
+              readonly
             />
           </b-form-group>
         </b-col>
@@ -72,7 +74,7 @@
         <b-col sm="6">
         
           <b-form-group label="Nombre de usuario" label-for="username">
-            <b-form-input v-model="usuario.username" id="username" placeholder="Username" readonly/>
+            <b-form-input v-model="usuario.username" id="username" placeholder="Username" readonly />
           </b-form-group>
           
         </b-col>
@@ -83,6 +85,7 @@
               v-model="usuario.email"
               name="formulario.email"
               placeholder="Email"
+              readonly
             />
 
           </b-form-group>
@@ -94,6 +97,37 @@
               placeholder="Fecha de nacimiento" />
           </b-form-group>
         </b-col>
+
+         <b-col sm="6">
+            <b-form-group label-for="Sexo" label="Sexo">
+              <b-form-radio-group v-model="formulario.genero" :options="[
+                {text:'Hombre',value:1},
+                { text: 'Mujer', value: 2 },
+                { text: 'Otro', value: 3 },
+              ]"></b-form-radio-group>
+            </b-form-group>
+          </b-col>
+
+
+
+          <b-col sm="6">
+            <b-form-group label-for="Teléfono" label="Teléfono">
+                 <b-form-input type="tel" v-model="formulario.telefono" v-mask="'+#############'"  readonly />
+            </b-form-group>
+          </b-col>
+
+           <b-col sm="6">
+               <b-form-group label-for="Whatsapp" label="Whatsapp">
+                    <b-form-input type="tel" v-model="formulario.whatsapp"
+                        v-mask="getMaskTelefono" :placeholder="getMaskTelefono" :disabled="!formulario.pais_id"/>
+              </b-form-group>
+            </b-col>
+
+           <b-col sm="6" v-if="formulario.pais">
+                <b-form-group label-for="Pais" label="Pais">
+                    <b-form-input  v-model="formulario.pais.pais" readonly />
+              </b-form-group>
+            </b-col>
        
 
         <!-- alert -->
@@ -101,20 +135,7 @@
           cols="12"
           class="mt-75"
         >
-          <!-- <b-alert
-            show
-            variant="warning"
-            class="mb-50"
-          >
-            <h4 class="alert-heading">
-              Your email is not confirmed. Please check your inbox.
-            </h4>
-            <div class="alert-body">
-              <b-link class="alert-link">
-                Resend confirmation
-              </b-link>
-            </div>
-          </b-alert> -->
+
         </b-col>
         <!--/ alert -->
 
@@ -141,7 +162,7 @@
 
 <script>
 import {
-  BFormFile, BButton, BForm, BFormGroup, BFormInput, BRow, BCol, BAlert, BCard, BCardText, BMedia, BMediaAside, BMediaBody, BLink, BImg,BButtonGroup
+  BFormFile, BButton, BForm, BFormGroup, BFormInput, BRow, BCol, BAlert, BCard, BCardText, BMedia, BMediaAside, BMediaBody, BLink, BImg,BButtonGroup,BFormRadioGroup
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 import { useInputImageRenderer } from '@core/comp-functions/forms/form-utils'
@@ -158,6 +179,7 @@ export default {
     BImg,
     BFormFile,
     BFormGroup,
+    BFormRadioGroup,
     BFormInput,
     BRow,
     BCol,
@@ -270,7 +292,13 @@ export default {
       profileFile,
       cargarImagen,
       guardar,
-      resetForm
+      resetForm,
+      getMaskTelefono: computed(() => {
+        if (formulario.value.pais_id) {
+          return `+${formulario.value.pais.lada}##########`
+        }
+        return '+#############'
+      })
       
     }
   }

@@ -15,7 +15,7 @@
                               <validation-provider name="entidad" rules="required" #default="{errors,valid}">
                                  
                                  <b-form-input v-model="formulario.entidad" :state="valid"  placeholder="Nombre del banco" />
-
+                                 
                                  <b-form-invalid-feedback >
                                     {{ errors[0] }}
                                  </b-form-invalid-feedback>

@@ -176,7 +176,7 @@ export default{
 
                 
 
-                  axios.post(`/api/pagos/${datos.id}`, datos).then(({ data }) => {
+                  axios.put(`/api/pagos/${datos.id}`, datos).then(({ data }) => {
                      if (data.result) {
                         commit('update', data.pago)
                      }

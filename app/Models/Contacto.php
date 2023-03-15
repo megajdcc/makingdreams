@@ -16,7 +16,8 @@ class Contacto extends Model
         'telefono_1',
         'telefono_2',
         'otro',
-        'usuario_id'
+        'usuario_id',
+        'mensaje'
     ];
 
 

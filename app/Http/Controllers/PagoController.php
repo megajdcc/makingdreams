@@ -16,7 +16,7 @@ class PagoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('convertir_null')->only(['store']);
+        // $this->middleware('convertir_null')->only(['store']);
     }
 
     public function fetchData(Request $request){
@@ -83,9 +83,8 @@ class PagoController extends Controller
         try{
             DB::beginTransaction();
 
-            \settype($datos['metodo'],'integer');
 
-            if($datos['metodo'] === 3){
+            if((int) $datos['metodo'] === 3){
 
                     $imagen = $request->file('comprobante');
                     $imagen_name = \sha1($imagen->getClientOriginalName()).'.'.$imagen->getClientOriginalExtension();
@@ -98,18 +97,22 @@ class PagoController extends Controller
                         'status' => 1,
                         'usuario_id' => $datos['usuario_id'],
                         'concepto' => $datos['concepto'],
-                        'metodo' => $datos['metodo'],
+                        'metodo' => (int) $datos['metodo'],
                         'comprobante' => $imagen_name
                     ]);
 
                 $usuario = $pago->usuario;
             }else{
-
-                
-                $pago = Pago::create($this->validar($request));
+                // dd($this->validar($request));
+                $pago = Pago::create([
+                    ...$this->validar($request),
+                    ...[
+                        'model_type' => 'App\Models\User',
+                        'model_id' => $request->user()->id
+                    ]
+                ]);
                 
                 $usuario = $pago->usuario;
-
 
                 if (!$usuario->backoffice) {
                     $usuario->backoffice = true;
@@ -118,14 +121,8 @@ class PagoController extends Controller
 
             }
 
-
-          
-
             DB::commit();
-
             $result = true;
-
-           
 
             // $cuenta = $usuario->cuenta;
 

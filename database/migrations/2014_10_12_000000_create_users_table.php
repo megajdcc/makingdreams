@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('fecha_nacimiento')->nullable();
             $table->tinyInteger('genero')->default(1);
             $table->string('telefono');
-            $table->string('whatsapp');
+            $table->string('whatsapp')->nullable();
             $table->boolean('activo')->default(true);
             $table->boolean('backoffice')->default(false);
             $table->string('imagen')->nullable();

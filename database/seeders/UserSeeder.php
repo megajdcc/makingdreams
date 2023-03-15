@@ -70,6 +70,9 @@ class UserSeeder extends Seeder
                 'usuario_id' => $usuario->id 
             ]);
 
+
+            $usuario->createLink();
+
             $usuario->asignarPermisosPorRol();
 
             $textToken = ($usuario->createToken($usuario->nombre.'-'.$usuario->id))->plainTextToken;

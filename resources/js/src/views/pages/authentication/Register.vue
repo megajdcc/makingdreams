@@ -12,6 +12,10 @@
         <b-card-title class="mb-1">
           La aventura comienza aquí 🚀
         </b-card-title>
+
+          <b-card-text class="mb-2">
+           Invitado por : {{ referidor ? `${referidor.nombre} ${referidor.apellido}` : 'Sin definir' }}
+          </b-card-text>
         <b-card-text class="mb-2">
           Empieza por registrarte.
         </b-card-text>
@@ -69,21 +73,7 @@
                   </validation-provider>
                 </b-form-group>
             
-                <!-- Telefono -->
-                <b-form-group>
-                  <template #label>
-                    Teléfono: <span class="text-danger">*</span>
-                  </template>
-            
-                  <validation-provider name="telefono" rules="required" #default="{errors}">
-                    <b-form-input type="tel" v-model="formulario.telefono" :state="errors.length ? false : null" v-mask="'+#############'" />
-            
-                    <b-form-invalid-feedback>
-                      {{ errors[0] }}
-                    </b-form-invalid-feedback>
-            
-                  </validation-provider>
-                </b-form-group>
+               
 
                 <!-- Pais -->
 
@@ -103,6 +93,24 @@
                   </validation-provider>
 
                 </b-form-group>
+
+
+                 <!-- Telefono -->
+                  <b-form-group>
+                    <template #label>
+                      Teléfono: <span class="text-danger">*</span>
+                    </template>
+            
+                    <validation-provider name="telefono" rules="required" #default="{ errors }">
+                      <b-form-input type="tel" v-model="formulario.telefono" :state="errors.length ? false : null" 
+                      v-mask="getMaskTelefono" :placeholder="getMaskTelefono" :disabled="!formulario.pais_id"/>
+            
+                      <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+            
+                    </validation-provider>
+                  </b-form-group>
             
                 <!-- email -->
                 <b-form-group label-for="email">
@@ -272,6 +280,7 @@ export default {
     const passwordFieldType = ref('password')
     const sideImg = ref(require('@/assets/images/pages/register-v2.svg'));
     const formValidate = ref(null)
+    const referidor = ref(null)
 
     const formulario = ref({
       nombre: '',
@@ -300,9 +309,11 @@ export default {
       axios.get(`/api/fetch/link/${link.value}`).then(({data}) => {
 
         if(!data.result){
-          toast.info('El link de referencia no existe, si ya tiene un usuario, por favor ingrese ...',{position:'top-left'})
+          toast.info('El link de referencia no existe, si ya tiene un usuario, por favor ingrese ...',{position:'bottom-left'})
           router.push({name:'login'})
         }
+
+        referidor.value = data.referidor
 
       }).catch(e => console.log(e))
 
@@ -385,7 +396,16 @@ export default {
       registrar,
       clearFormulario,
       logotipo,
-      paises
+      paises,
+      referidor,
+      
+      getMaskTelefono:computed(() => {
+        if(formulario.value.pais){
+          return `+${paises.value.find(val => val.id == formulario.value.pais_id).lada}##########`
+        }
+        return '+#############'
+      })
+
    
     }
 

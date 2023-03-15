@@ -37,7 +37,7 @@ class User extends Authenticatable
         'apellido',
         "username",
         'fecha_nacimiento',
-        'genero' , // 1 => Masculino, 2 => femenino
+        'genero' , // 1 => Masculino, 2 => femenino, 3 => otro
         'activo', // activo o no valor booleano
         'telefono',
         'whatsapp',
@@ -154,12 +154,12 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'usuario_referidos', 'referido_id', 'referidor_id')->withPivot(['link_referencia']);
     }
 
-    // /**
-    //  * Un usuario puede tener cero o cincos cuentas Bancarias asociadas...
-    //  */
-    // public function datosBancarios(){
-    //     return $this->hasMany(DatoBancario::class,'usuario_id','id');
-    // }
+    /**
+     * Un usuario puede tener cero o cincos cuentas Bancarias asociadas...
+     */
+    public function datosBancarios(){
+        return $this->hasMany(DatoBancario::class,'usuario_id','id');
+    }
 
     /**
      * Un usuario puede tener 1  o 5 numeros de telefonos;
@@ -219,18 +219,23 @@ class User extends Authenticatable
     }
 
     public function cargar() : User{
-        $this->cuenta;
-        // $this->telefonos;
-        // $this->datosBancarios;
+        // $this->cuenta;
+        $this->datosBancarios;
         $this->referidor;
         $this->link;
         $this->usuario = $this->getFullName();
         $this->permisos;
-        $this->rol;
+        $this->rol->permisos;
         $this->avatar = $this->getAvatar();
         $this->pagos;
         $this->puestos;
         $this->contacto;
+        $this->pais;
+        $this->telefono;
+        $this->ciudad;
+        $this->estado;
+
+
         return $this;
     }
 

@@ -24,7 +24,7 @@
     </b-tab>
     <!--/ general tab -->
 
-    <b-tab>
+    <b-tab v-if="isActiveLink">
 
         <template #title>
           <feather-icon icon="Share2Icon" />
@@ -35,7 +35,7 @@
 
     </b-tab>
 
-    <b-tab lazy>
+    <!-- <b-tab lazy>
 
         <template #title>
           <feather-icon icon="PhoneIcon" />
@@ -44,18 +44,31 @@
         
         <user-telefonos :usuario="usuario"/>
 
-    </b-tab>
+    </b-tab> -->
 
     <b-tab lazy>
     
       <template #title>
         <feather-icon icon="ListIcon" />
-        <span class="font-weight-bold">Datos Bancarios</span>
+        <span class="font-weight-bold">Información Bancaria</span>
       </template>
     
       <datos-bancario :usuario="usuario" />
     
     </b-tab>
+
+
+    <b-tab lazy>
+    
+      <template #title>
+        <font-awesome-icon icon="fas fa-phone"/>
+        <span class="font-weight-bold">Información de contacto</span>
+      </template>
+    
+      <datos-contacto :usuario="usuario" />
+    
+    </b-tab>
+
 
 
     <!-- <b-tab lazy >
@@ -101,6 +114,8 @@ import CambiarPassword from './CambiarPassword.vue'
 import CuentaInformacionForm from './CuentaInformacionForm.vue'
 
 import {mapState,} from 'vuex';
+import {computed,toRefs} from 'vue'
+import store from '@/store'
 
 export default {
   components: {
@@ -111,7 +126,8 @@ export default {
     Invitados:() => import('./invitados/index.vue'),
     // FirmaDigital:() => import('./FirmaDigital.vue')
     UserTelefonos: () => import('./UserTelefonos.vue'),
-    DatosBancario: () => import('./DatosBancario.vue')
+    DatosBancario: () => import('./DatosBancario.vue'),
+    DatosContacto:() => import('views/perfil/DatosContacto.vue')
 
   },
   data() {
@@ -127,5 +143,27 @@ export default {
   beforeCreate() {
     // this.$http.get('/account-setting/data').then(res => { this.options = res.data })
   },
+
+  setup(){
+
+    const {usuario} = toRefs(store.state.usuario)
+
+    const isActiveLink = computed(() => {
+
+      if(usuario.value.puestos.length){
+        return usuario.value.puestos.filter(val => val.status > 1 ).length 
+      }else{
+      
+        return false;
+      
+      }
+    })
+
+    return {
+      isActiveLink,
+      usuario
+    }
+  }
+
 }
 </script>
